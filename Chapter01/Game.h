@@ -40,7 +40,7 @@ private:
 	SDL_Renderer* mRenderer;
 	// Number of ticks since start of game
 	Uint32 mTicksCount;
-	// Game is still running
+	// Game should continue to run
 	bool mIsRunning;
 	
 	// Pong specific

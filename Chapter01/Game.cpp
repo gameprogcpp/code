@@ -24,7 +24,7 @@ Game::Game()
 bool Game::Initialize()
 {
 	// Initialize SDL
-	int sdlResult = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+	int sdlResult = SDL_Init(SDL_INIT_VIDEO);
 	if (sdlResult != 0)
 	{
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
@@ -47,7 +47,7 @@ bool Game::Initialize()
 		return false;
 	}
 	
-	// Create SDL renderer
+	//// Create SDL renderer
 	mRenderer = SDL_CreateRenderer(
 		mWindow, // Window to create renderer for
 		-1,		 // Usually -1
@@ -59,7 +59,7 @@ bool Game::Initialize()
 		SDL_Log("Failed to create renderer: %s", SDL_GetError());
 		return false;
 	}
-	
+	//
 	mPaddlePos.x = 10.0f;
 	mPaddlePos.y = 768.0f/2.0f;
 	mBallPos.x = 1024.0f/2.0f;
@@ -82,12 +82,11 @@ void Game::RunLoop()
 void Game::ProcessInput()
 {
 	SDL_Event event;
-	// Use poll event to figure out if user
-	// is trying to quit
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
+			// If we get an SDL_QUIT event, end loop
 			case SDL_QUIT:
 				mIsRunning = false;
 				break;
@@ -95,12 +94,14 @@ void Game::ProcessInput()
 	}
 	
 	// Get state of keyboard
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+	// If escape is pressed, also end loop
 	if (state[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
 	
+	// Update paddle direction based on W/S keys
 	mPaddleDir = 0;
 	if (state[SDL_SCANCODE_W])
 	{
@@ -114,7 +115,6 @@ void Game::ProcessInput()
 
 void Game::UpdateGame()
 {
-	// Compute delta time
 	// Wait until 16ms has elapsed since last frame
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16))
 		;
@@ -136,6 +136,7 @@ void Game::UpdateGame()
 	if (mPaddleDir != 0)
 	{
 		mPaddlePos.y += mPaddleDir * 300.0f * deltaTime;
+		// Make sure paddle doesn't move off screen!
 		if (mPaddlePos.y < (paddleH/2.0f + thickness))
 		{
 			mPaddlePos.y = paddleH/2.0f + thickness;
@@ -158,7 +159,6 @@ void Game::UpdateGame()
 		&& mBallVel.x < 0.0f)
 	{
 		mBallVel.x *= -1.0f;
-		mBallPos.x = 26.0f;
 	}
 	// Did the ball go off the screen? (if so, end game)
 	else if (mBallPos.x <= 0.0f)
@@ -169,26 +169,24 @@ void Game::UpdateGame()
 	else if (mBallPos.x >= (1024.0f - thickness) && mBallVel.x > 0.0f)
 	{
 		mBallVel.x *= -1.0f;
-		mBallPos.x = 1024.0f - thickness;
 	}
 	
 	// Did the ball collide with the top wall?
 	if (mBallPos.y <= thickness && mBallVel.y < 0.0f)
 	{
 		mBallVel.y *= -1;
-		mBallPos.y = thickness;
 	}
-	// Did the ball collide with the right wall?
+	// Did the ball collide with the bottom wall?
 	else if (mBallPos.y >= (768 - thickness) &&
 		mBallVel.y > 0.0f)
 	{
 		mBallVel.y *= -1;
-		mBallPos.y = 768 - thickness;
 	}
 }
 
 void Game::GenerateOutput()
 {
+	// Set draw color to blue
 	SDL_SetRenderDrawColor(
 		mRenderer,
 		0,		// R
@@ -196,8 +194,10 @@ void Game::GenerateOutput()
 		255,	// B
 		255		// A
 	);
-	SDL_RenderClear(mRenderer);
 	
+	// Clear back buffer
+	SDL_RenderClear(mRenderer);
+
 	// Draw walls
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 	
@@ -231,7 +231,7 @@ void Game::GenerateOutput()
 	SDL_RenderFillRect(mRenderer, &paddle);
 	
 	// Draw ball
-	SDL_Rect ball{
+	SDL_Rect ball{	
 		static_cast<int>(mBallPos.x - thickness/2),
 		static_cast<int>(mBallPos.y - thickness/2),
 		thickness,
@@ -239,6 +239,7 @@ void Game::GenerateOutput()
 	};
 	SDL_RenderFillRect(mRenderer, &ball);
 	
+	// Swap front buffer and back buffer
 	SDL_RenderPresent(mRenderer);
 }
 
