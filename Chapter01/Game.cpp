@@ -152,11 +152,17 @@ void Game::UpdateGame()
 	mBallPos.y += mBallVel.y * deltaTime;
 	
 	// Bounce if needed
-	// Did we intrsect with the paddle?
+	// Did we intersect with the paddle?
 	float diff = mPaddlePos.y - mBallPos.y;
+	// Take absolute value of difference
 	diff = (diff > 0.0f) ? diff : -diff;
-	if (mBallPos.x <= 25.0f && mBallPos.x >= 20.0f && diff <= paddleH/2.0f
-		&& mBallVel.x < 0.0f)
+	if (
+		// Our y-difference is small enough
+		diff <= paddleH / 2.0f &&
+		// We are in the correct x-position
+		mBallPos.x <= 25.0f && mBallPos.x >= 20.0f &&
+		// The ball is moving to the left
+		mBallVel.x < 0.0f)
 	{
 		mBallVel.x *= -1.0f;
 	}
