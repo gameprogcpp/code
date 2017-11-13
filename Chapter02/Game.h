@@ -26,8 +26,7 @@ public:
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
 	
-	void LoadTexture(const char* fileName);
-	SDL_Texture* GetTexture(const char* fileName);
+	SDL_Texture* GetTexture(const std::string& fileName);
 private:
 	void ProcessInput();
 	void UpdateGame();

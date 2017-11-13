@@ -153,16 +153,6 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	// Load textures
-	LoadTexture("Assets/Laser.png");
-	LoadTexture("Assets/Ship01.png");
-	LoadTexture("Assets/Ship02.png");
-	LoadTexture("Assets/Ship03.png");
-	LoadTexture("Assets/Ship04.png");
-	LoadTexture("Assets/Farback01.png");
-	LoadTexture("Assets/Farback02.png");
-	LoadTexture("Assets/Stars.png");
-
 	// Create player's ship
 	mShip = new Ship(this);
 	mShip->SetPosition(Vector2(100.0f, 384.0f));
@@ -208,35 +198,35 @@ void Game::UnloadData()
 	mTextures.clear();
 }
 
-void Game::LoadTexture(const char* fileName)
-{
-	// Load from file
-	SDL_Surface* surf = IMG_Load(fileName);
-	if (!surf)
-	{
-		SDL_Log("Failed to load texture file %s", fileName);
-		return;
-	}
-
-	// Create texture from surface
-	SDL_Texture* text = SDL_CreateTextureFromSurface(mRenderer, surf);
-	SDL_FreeSurface(surf);
-	if (!text)
-	{
-		SDL_Log("Failed to convert surface to texture for %s", fileName);
-		return;
-	}
-	
-	mTextures.emplace(fileName, text);
-}
-
-SDL_Texture * Game::GetTexture(const char * fileName)
+SDL_Texture* Game::GetTexture(const std::string& fileName)
 {
 	SDL_Texture* tex = nullptr;
+	// Is the texture already in the map?
 	auto iter = mTextures.find(fileName);
 	if (iter != mTextures.end())
 	{
 		tex = iter->second;
+	}
+	else
+	{
+		// Load from file
+		SDL_Surface* surf = IMG_Load(fileName.c_str());
+		if (!surf)
+		{
+			SDL_Log("Failed to load texture file %s", fileName.c_str());
+			return nullptr;
+		}
+
+		// Create texture from surface
+		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+		SDL_FreeSurface(surf);
+		if (!tex)
+		{
+			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
+			return nullptr;
+		}
+
+		mTextures.emplace(fileName.c_str(), tex);
 	}
 	return tex;
 }
