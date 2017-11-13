@@ -1,6 +1,8 @@
-BSD 3-Clause License
+This license applies to the code in the Chapter directories. The code in the
+External directory is licensed separately, see each subfolder for license
+details.
 
-Copyright (c) 2017, gameprogcpp
+Copyright (c) 2017, Sanjay Madhav
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
