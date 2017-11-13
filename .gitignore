@@ -1,0 +1,12 @@
+*.db
+*.user
+*.opendb
+Debug/
+Release/
+.DS_Store
+*xcuserdatad*
+*.xccheckout
+*.stackdump
+.vs
+Chapter15/Assets/Saved.gplevel
+Chapter15/Assets/*.bin
