@@ -6,7 +6,7 @@ license. See LICENSE for more detail. Note that this license does not apply to
 the code in the External directory. Each External project is licensed separately.
 
 # Building the Code
-All chapters projects are tested on both Microsoft Windows and Apple macOS.
+Each chapter's code is tested and works on both Microsoft Windows and Apple macOS.
 
 To compile on Windows, install Microsoft Visual Studio 2017 Community
 (https://www.visualstudio.com/downloads/). During installation, select the
