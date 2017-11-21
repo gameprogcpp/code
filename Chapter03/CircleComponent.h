@@ -7,14 +7,20 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "Actor.h"
-class Ship : public Actor
+#include "Component.h"
+#include "Math.h"
+
+class CircleComponent : public Component
 {
 public:
-	Ship(class Game* game);
-
-	void UpdateActor(float deltaTime) override;
-	void ActorInput(const uint8_t* keyState) override;
+	CircleComponent(class Actor* owner);
+	
+	void SetRadius(float radius) { mRadius = radius; }
+	float GetRadius() const;
+	
+	const Vector2& GetCenter() const;
 private:
-	float mLaserCooldown;
+	float mRadius;
 };
+
+bool Intersect(const CircleComponent& a, const CircleComponent& b);
