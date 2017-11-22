@@ -35,10 +35,7 @@ void Bullet::UpdateActor(float deltaTime)
 	// Check for collision vs enemies
 	for (Enemy* e : GetGame()->GetEnemies())
 	{
-		Vector2 diff = e->GetCircle()->GetCenter() - mCircle->GetCenter();
-		float rad = e->GetCircle()->GetRadius() + mCircle->GetRadius();
-		rad *= rad;
-		if (diff.LengthSq() <= rad)
+		if (Intersect(*mCircle, *(e->GetCircle())))
 		{
 			// We both die on collision
 			e->SetState(EDead);

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Game.h"
@@ -18,6 +18,7 @@ Game::Game()
 :mWindow(nullptr)
 ,mRenderer(nullptr)
 ,mIsRunning(true)
+,mUpdatingActors(false)
 {
 	
 }
@@ -30,7 +31,7 @@ bool Game::Initialize()
 		return false;
 	}
 	
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 5)", 100, 100, 1024, 768, 0);
+	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 4)", 100, 100, 1024, 768, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -80,12 +81,13 @@ void Game::ProcessInput()
 		}
 	}
 	
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_ESCAPE])
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
-	if (state[SDL_SCANCODE_B])
+	
+	if (keyState[SDL_SCANCODE_B])
 	{
 		mGrid->BuildTower();
 	}
@@ -97,6 +99,13 @@ void Game::ProcessInput()
 	{
 		mGrid->ProcessClick(x, y);
 	}
+
+	mUpdatingActors = true;
+	for (auto actor : mActors)
+	{
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -113,15 +122,20 @@ void Game::UpdateGame()
 	}
 	mTicksCount = SDL_GetTicks();
 
-	// Make copy of actor vector
-	// (iterate over this in case new actors are created)
-	std::vector<Actor*> copy = mActors;
-
 	// Update all actors
-	for (auto actor : copy)
+	mUpdatingActors = true;
+	for (auto actor : mActors)
 	{
 		actor->Update(deltaTime);
 	}
+	mUpdatingActors = false;
+
+	// Move any pending actors to mActors
+	for (auto pending : mPendingActors)
+	{
+		mActors.emplace_back(pending);
+	}
+	mPendingActors.clear();
 
 	// Add any dead actors to a temp vector
 	std::vector<Actor*> deadActors;
@@ -133,8 +147,7 @@ void Game::UpdateGame()
 		}
 	}
 
-	// Delete any of the dead actors (which will
-	// remove them from mActors)
+	// Delete dead actors (which removes them from mActors)
 	for (auto actor : deadActors)
 	{
 		delete actor;
@@ -157,20 +170,6 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	// Load textures
-	LoadTexture("Assets/TileBrown.png");
-	LoadTexture("Assets/TileGreen.png");
-	LoadTexture("Assets/TileGrey.png");
-	LoadTexture("Assets/TileTan.png");
-	LoadTexture("Assets/TileBrownSelected.png");
-	LoadTexture("Assets/TileGreenSelected.png");
-	LoadTexture("Assets/TileGreySelected.png");
-	LoadTexture("Assets/TileTanSelected.png");
-	LoadTexture("Assets/Base.png");
-	LoadTexture("Assets/Tower.png");
-	LoadTexture("Assets/Airplane.png");
-	LoadTexture("Assets/Projectile.png");
-	
 	mGrid = new Grid(this);
 }
 
@@ -191,35 +190,35 @@ void Game::UnloadData()
 	mTextures.clear();
 }
 
-void Game::LoadTexture(const char* fileName)
-{
-	// Load from file
-	SDL_Surface* surf = IMG_Load(fileName);
-	if (!surf)
-	{
-		SDL_Log("Failed to load texture file %s", fileName);
-		return;
-	}
-
-	// Create texture from surface
-	SDL_Texture* text = SDL_CreateTextureFromSurface(mRenderer, surf);
-	SDL_FreeSurface(surf);
-	if (!text)
-	{
-		SDL_Log("Failed to convert surface to texture for %s", fileName);
-		return;
-	}
-	
-	mTextures.emplace(fileName, text);
-}
-
-SDL_Texture * Game::GetTexture(const std::string& fileName)
+SDL_Texture* Game::GetTexture(const std::string& fileName)
 {
 	SDL_Texture* tex = nullptr;
+	// Is the texture already in the map?
 	auto iter = mTextures.find(fileName);
 	if (iter != mTextures.end())
 	{
 		tex = iter->second;
+	}
+	else
+	{
+		// Load from file
+		SDL_Surface* surf = IMG_Load(fileName.c_str());
+		if (!surf)
+		{
+			SDL_Log("Failed to load texture file %s", fileName.c_str());
+			return nullptr;
+		}
+
+		// Create texture from surface
+		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+		SDL_FreeSurface(surf);
+		if (!tex)
+		{
+			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
+			return nullptr;
+		}
+
+		mTextures.emplace(fileName.c_str(), tex);
 	}
 	return tex;
 }
@@ -235,12 +234,30 @@ void Game::Shutdown()
 
 void Game::AddActor(Actor* actor)
 {
-	mActors.emplace_back(actor);
+	// If we're updating actors, need to add to pending
+	if (mUpdatingActors)
+	{
+		mPendingActors.emplace_back(actor);
+	}
+	else
+	{
+		mActors.emplace_back(actor);
+	}
 }
 
 void Game::RemoveActor(Actor* actor)
 {
-	auto iter = std::find(mActors.begin(), mActors.end(), actor);
+	// Is it in pending actors?
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors?
+	iter = std::find(mActors.begin(), mActors.end(), actor);
 	if (iter != mActors.end())
 	{
 		// Swap to end of vector and pop off (avoid erase copies)
@@ -251,15 +268,27 @@ void Game::RemoveActor(Actor* actor)
 
 void Game::AddSprite(SpriteComponent* sprite)
 {
-	mSprites.emplace_back(sprite);
-	// Resort sprites by draw order
-	std::sort(mSprites.begin(), mSprites.end(), [](SpriteComponent* a, SpriteComponent* b) {
-		return a->GetDrawOrder() < b->GetDrawOrder();
-	});
+	// Find the insertion point in the sorted vector
+	// (The first element with a higher draw order than me)
+	int myDrawOrder = sprite->GetDrawOrder();
+	auto iter = mSprites.begin();
+	for ( ;
+		iter != mSprites.end();
+		++iter)
+	{
+		if (myDrawOrder < (*iter)->GetDrawOrder())
+		{
+			break;
+		}
+	}
+
+	// Inserts element before position of iterator
+	mSprites.insert(iter, sprite);
 }
 
 void Game::RemoveSprite(SpriteComponent* sprite)
 {
+	// (We can't swap because it ruins ordering)
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
 }

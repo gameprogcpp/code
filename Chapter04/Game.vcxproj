@@ -14,7 +14,6 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
-    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -31,7 +30,6 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CircleComponent.h" />
-    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />

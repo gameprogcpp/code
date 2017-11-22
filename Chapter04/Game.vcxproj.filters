@@ -31,9 +31,6 @@
     <ClCompile Include="CircleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,9 +70,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CircleComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
