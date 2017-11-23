@@ -49,6 +49,12 @@
     <ClCompile Include="Tower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AIComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AIState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -88,6 +94,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Tower.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AIComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AIState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

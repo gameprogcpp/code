@@ -13,6 +13,8 @@
 #include "SpriteComponent.h"
 #include "Grid.h"
 #include "Enemy.h"
+#include "AIComponent.h"
+#include "AIState.h"
 
 Game::Game()
 :mWindow(nullptr)
@@ -171,6 +173,16 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mGrid = new Grid(this);
+
+	// For testing AIComponent
+	//Actor* a = new Actor(this);
+	//AIComponent* aic = new AIComponent(a);
+	//// Register states with AIComponent
+	//aic->RegisterState(new AIPatrol(aic));
+	//aic->RegisterState(new AIDeath(aic));
+	//aic->RegisterState(new AIAttack(aic));
+	//// Start in patrol state
+	//aic->ChangeState("Patrol");
 }
 
 void Game::UnloadData()
