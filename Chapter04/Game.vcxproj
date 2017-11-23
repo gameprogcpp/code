@@ -24,6 +24,7 @@
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="NavComponent.cpp" />
+    <ClCompile Include="Search.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Tower.cpp" />
