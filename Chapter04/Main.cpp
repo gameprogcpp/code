@@ -31,19 +31,39 @@ struct WeightedEdge
 	// Weight of this edge
 	float mWeight;
 };
+
 struct WeightedGraphNode
 {
 	std::vector<WeightedEdge*> mEdges;
-	// Edge from parent to me
-	WeightedEdge* mParentEdge;
-	float f;
-	float g;
-	float h;
 };
+
 struct WeightedGraph
 {
 	std::vector<WeightedGraphNode*> mNodes;
 };
+
+struct GBFSScratch
+{
+	WeightedEdge* mParentEdge = nullptr;
+	float mHeuristic = 0.0f;
+	bool mInOpenSet = false;
+	bool mInClosedSet = false;
+};
+
+using GBFSMap =
+	std::unordered_map<WeightedGraphNode*, GBFSScratch>;
+
+struct AStarScratch
+{
+	WeightedEdge* mParentEdge = nullptr;
+	float mHeuristic = 0.0f;
+	float mActualFromStart = 0.0f;
+	bool mInOpenSet = false;
+	bool mInClosedSet = false;
+};
+
+using AStarMap =
+	std::unordered_map<WeightedGraphNode*, AStarScratch>;
 
 float ComputeHeuristic(WeightedGraphNode* a, WeightedGraphNode* b)
 {
@@ -51,56 +71,45 @@ float ComputeHeuristic(WeightedGraphNode* a, WeightedGraphNode* b)
 }
 
 bool AStar(WeightedGraph& g, WeightedGraphNode* start,
-		  WeightedGraphNode* goal)
+		  WeightedGraphNode* goal, AStarMap& outMap)
 {
-	// Reset mParentEdge for all nodes
-	for (WeightedGraphNode* node : g.mNodes)
-	{
-		node->mParentEdge = nullptr;
-	}
-	
-	// Open/closed sets
 	std::vector<WeightedGraphNode*> openSet;
-	std::vector<WeightedGraphNode*> closedSet;
 	
-	// Set current node to start, and add to closed set
+	// Set current node to start, and mark in closed set
 	WeightedGraphNode* current = start;
-	closedSet.emplace_back(current);
+	outMap[current].mInClosedSet = true;
 	
 	do
 	{
 		// Add adjacent nodes to open set
 		for (WeightedEdge* edge : current->mEdges)
 		{
+			WeightedGraphNode* neighbor = edge->mTo;
+			// Get scratch data for this node
+			AStarScratch& data = outMap[neighbor];
 			// Only check nodes that aren't in the closed set
-			auto iter = std::find(closedSet.begin(), closedSet.end(),
-								  edge->mTo);
-			if (iter == closedSet.end())
+			if (!data.mInClosedSet)
 			{
-				iter = std::find(openSet.begin(), openSet.end(), edge->mTo);
-				if (iter == openSet.end())
+				if (!data.mInOpenSet)
 				{
-					// Not in the open set, so set parent
-					WeightedGraphNode* neighbor = edge->mTo;
-					neighbor->mParentEdge = edge;
-					neighbor->h = ComputeHeuristic(neighbor, goal);
-					// g(x) is the parent's g plus cost of traversing edge
-					neighbor->g = current->g + edge->mWeight;
-					neighbor->f = neighbor->g + neighbor->h;
+					// Not in the open set, so parent must be current
+					data.mParentEdge = edge;
+					data.mHeuristic = ComputeHeuristic(neighbor, goal);
+					// Actual cost is the parent's plus cost of traversing edge
+					data.mActualFromStart = outMap[current].mActualFromStart +
+						edge->mWeight;
+					data.mInOpenSet = true;
 					openSet.emplace_back(neighbor);
 				}
 				else
 				{
-					WeightedGraphNode* neighbor = edge->mTo;
-					// Compute g(x) cost if current becomes the parent
-					float newG = current->g + edge->mWeight;
-					if (newG < current->g)
+					// Compute what new actual cost is if current becomes parent
+					float newG = outMap[current].mActualFromStart + edge->mWeight;
+					if (newG < data.mActualFromStart)
 					{
-						// Adopt this node
-						neighbor->mParentEdge = edge;
-						neighbor->g = newG;
-						// f(x) changes because g(x) changes
-						neighbor->f = neighbor->g + neighbor->h;
+						// Current should adopt this node
+						data.mParentEdge = edge;
+						data.mActualFromStart = newG;
 					}
 				}
 			}
@@ -114,13 +123,17 @@ bool AStar(WeightedGraph& g, WeightedGraphNode* start,
 		
 		// Find lowest cost node in open set
 		auto iter = std::min_element(openSet.begin(), openSet.end(),
-		[](WeightedGraphNode* a, WeightedGraphNode* b) {
-			return a->f < b->f;
+			[&outMap](WeightedGraphNode* a, WeightedGraphNode* b) {
+				// Calculate f(x) for nodes a/b
+				float fOfA = outMap[a].mHeuristic + outMap[a].mActualFromStart;
+				float fOfB = outMap[b].mHeuristic + outMap[b].mActualFromStart;
+				return fOfA < fOfB;
 		});
 		// Set to current and move from open to closed
 		current = *iter;
 		openSet.erase(iter);
-		closedSet.emplace_back(current);
+		outMap[current].mInOpenSet = true;
+		outMap[current].mInClosedSet = true;
 	}
 	while (current != goal);
 	
@@ -129,39 +142,31 @@ bool AStar(WeightedGraph& g, WeightedGraphNode* start,
 }
 
 bool GBFS(WeightedGraph& g, WeightedGraphNode* start,
-		  WeightedGraphNode* goal)
+		  WeightedGraphNode* goal, GBFSMap& outMap)
 {
-	// Reset mParentEdge for all nodes
-	for (WeightedGraphNode* node : g.mNodes)
-	{
-		node->mParentEdge = nullptr;
-	}
-	
-	// Open/closed sets
 	std::vector<WeightedGraphNode*> openSet;
-	std::vector<WeightedGraphNode*> closedSet;
 	
-	// Set current node to start, and add to closed set
+	// Set current node to start, and mark in closed set
 	WeightedGraphNode* current = start;
-	closedSet.emplace_back(current);
+	outMap[current].mInClosedSet = true;
 	
 	do
 	{
 		// Add adjacent nodes to open set
 		for (WeightedEdge* edge : current->mEdges)
 		{
-			// Only check nodes that aren't in the closed set
-			auto iter = std::find(closedSet.begin(), closedSet.end(),
-								  edge->mTo);
-			if (iter == closedSet.end())
+			// Get scratch data for this node
+			GBFSScratch& data = outMap[edge->mTo];
+			// Add it only if it's not in the closed set
+			if (!data.mInClosedSet)
 			{
 				// Set the adjacent node's parent edge
-				edge->mTo->mParentEdge = edge;
-				iter = std::find(openSet.begin(), openSet.end(), edge->mTo);
-				if (iter == openSet.end())
+				data.mParentEdge = edge;
+				if (!data.mInOpenSet)
 				{
 					// Compute the heuristic for this node, and add to open set
-					edge->mTo->h = ComputeHeuristic(edge->mTo, goal);
+					data.mHeuristic = ComputeHeuristic(edge->mTo, goal);
+					data.mInOpenSet = true;
 					openSet.emplace_back(edge->mTo);
 				}
 			}
@@ -175,15 +180,16 @@ bool GBFS(WeightedGraph& g, WeightedGraphNode* start,
 		
 		// Find lowest cost node in open set
 		auto iter = std::min_element(openSet.begin(), openSet.end(),
-			[](WeightedGraphNode* a, WeightedGraphNode* b) {
-				return a->h < b->h;
+			[&outMap](WeightedGraphNode* a, WeightedGraphNode* b) {
+				return outMap[a].mHeuristic < outMap[b].mHeuristic;
 		});
+
 		// Set to current and move from open to closed
 		current = *iter;
 		openSet.erase(iter);
-		closedSet.emplace_back(current);
-	}
-	while (current != goal);
+		outMap[current].mInOpenSet = false;
+		outMap[current].mInClosedSet = true;
+	} while (current != goal);
 	
 	// Did we find a path?
 	return (current == goal) ? true : false;
@@ -271,7 +277,7 @@ void testBFS()
 	std::cout << found << '\n';
 }
 
-void testAStar()
+void testHeuristic(bool useAStar)
 {
 	WeightedGraph g;
 	for (int i = 0; i < 5; i++)
@@ -322,7 +328,17 @@ void testAStar()
 			}
 		}
 	}
-	bool found = AStar(g, g.mNodes[0], g.mNodes[9]);
+	bool found = false;
+	if (useAStar)
+	{
+		AStarMap map;
+		found = AStar(g, g.mNodes[0], g.mNodes[9], map);
+	}
+	else
+	{
+		GBFSMap map;
+		found = GBFS(g, g.mNodes[0], g.mNodes[9], map);
+	}
 	std::cout << found << '\n';
 }
 
@@ -569,6 +585,8 @@ void testTicTac()
 
 int main(int argc, char** argv)
 {
+	testHeuristic(false);
+	testHeuristic(true);
 	Game game;
 	bool success = game.Initialize();
 	if (success)

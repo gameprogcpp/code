@@ -35,6 +35,8 @@ private:
 	float f;
 	float g;
 	float h;
+	bool mInOpenSet;
+	bool mInClosedSet;
 	bool mBlocked;
 	
 	void UpdateTexture();
