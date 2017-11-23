@@ -15,8 +15,6 @@ struct GraphNode
 {
 	// Adjacency list
 	std::vector<GraphNode*> mAdjacent;
-	// Previous node visited on path
-	GraphNode* mParent;
 };
 
 struct Graph
@@ -116,9 +114,9 @@ bool AStar(WeightedGraph& g, WeightedGraphNode* start,
 		
 		// Find lowest cost node in open set
 		auto iter = std::min_element(openSet.begin(), openSet.end(),
-									 [](WeightedGraphNode* a, WeightedGraphNode* b) {
-										 return a->f < b->f;
-									 });
+		[](WeightedGraphNode* a, WeightedGraphNode* b) {
+			return a->f < b->f;
+		});
 		// Set to current and move from open to closed
 		current = *iter;
 		openSet.erase(iter);
@@ -191,15 +189,12 @@ bool GBFS(WeightedGraph& g, WeightedGraphNode* start,
 	return (current == goal) ? true : false;
 }
 
-bool BFS(Graph& graph, GraphNode* start, GraphNode* goal)
-{
-	// Reset mParent for all nodes
-	for (GraphNode* node : graph.mNodes)
-	{
-		node->mParent = nullptr;
-	}
-	
-	// Whether or not we found a path
+using NodeToParentMap = 
+	std::unordered_map<GraphNode*, GraphNode*>;
+
+bool BFS(Graph& graph, GraphNode* start, GraphNode* goal, NodeToParentMap& outMap)
+{	
+	// Whether we found a path
 	bool pathFound = false;
 	// Nodes to consider
 	std::queue<GraphNode*> q;
@@ -217,15 +212,16 @@ bool BFS(Graph& graph, GraphNode* start, GraphNode* goal)
 			break;
 		}
 		
-		// Enqueue adjacent nodes that aren't already queued
+		// Enqueue adjacent nodes that aren't already in the queue
 		for (GraphNode* node : current->mAdjacent)
 		{
 			// If the parent is null, it hasn't been enqueued
 			// (except for the start node)
-			if (node->mParent == nullptr && node != start)
+			GraphNode* parent = outMap[node];
+			if (parent == nullptr && node != start)
 			{
 				// Enqueue this node, setting its parent
-				node->mParent = current;
+				outMap[node] = current;
 				q.emplace(node);
 			}
 		}
@@ -234,7 +230,48 @@ bool BFS(Graph& graph, GraphNode* start, GraphNode* goal)
 	return pathFound;
 }
 
-void test()
+void testBFS()
+{
+	Graph g;
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			GraphNode* node = new GraphNode;
+			g.mNodes.emplace_back(node);
+		}
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			GraphNode* node = g.mNodes[i * 5 + j];
+			if (i > 0)
+			{
+				node->mAdjacent.emplace_back(g.mNodes[(i - 1) * 5 + j]);
+			}
+			if (i < 4)
+			{
+				node->mAdjacent.emplace_back(g.mNodes[(i + 1) * 5 + j]);
+			}
+			if (j > 0)
+			{
+				node->mAdjacent.emplace_back(g.mNodes[i * 5 + j - 1]);
+			}
+			if (j < 4)
+			{
+				node->mAdjacent.emplace_back(g.mNodes[i * 5 + j + 1]);
+			}
+		}
+	}
+
+	NodeToParentMap map;
+	bool found = BFS(g, g.mNodes[0], g.mNodes[9], map);
+	std::cout << found << '\n';
+}
+
+void testAStar()
 {
 	WeightedGraph g;
 	for (int i = 0; i < 5; i++)
@@ -512,7 +549,7 @@ GTNode* AlphaBetaDecide(GTNode* root)
 	return choice;
 }
 
-void test2()
+void testTicTac()
 {
 	GTNode* root = new GTNode;
 	root->mState.mBoard[0][0] = GameState::O;
