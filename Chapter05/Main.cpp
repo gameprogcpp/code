@@ -3,13 +3,10 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Game.h"
-#include <vector>
-#include <queue>
-#include <iostream>
 
 int main(int argc, char** argv)
 {

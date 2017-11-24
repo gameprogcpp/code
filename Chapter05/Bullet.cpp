@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Bullet.h"
@@ -35,10 +35,7 @@ void Bullet::UpdateActor(float deltaTime)
 	// Check for collision vs enemies
 	for (Enemy* e : GetGame()->GetEnemies())
 	{
-		Vector2 diff = e->GetCircle()->GetCenter() - mCircle->GetCenter();
-		float rad = e->GetCircle()->GetRadius() + mCircle->GetRadius();
-		rad *= rad;
-		if (diff.LengthSq() <= rad)
+		if (Intersect(*mCircle, *(e->GetCircle())))
 		{
 			// We both die on collision
 			e->SetState(EDead);
