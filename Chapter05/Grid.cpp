@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Grid.h"
@@ -106,16 +106,16 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 		for (size_t j = 0; j < NumCols; j++)
 		{
 			mTiles[i][j]->g = 0.0f;
+			mTiles[i][j]->mInOpenSet = false;
+			mTiles[i][j]->mInClosedSet = false;
 		}
 	}
 	
-	// Open/closed sets
 	std::vector<Tile*> openSet;
-	std::vector<Tile*> closedSet;
 	
 	// Set current node to start, and add to closed set
 	Tile* current = start;
-	closedSet.emplace_back(current);
+	current->mInClosedSet = true;
 	
 	do
 	{
@@ -128,27 +128,24 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 			}
 			
 			// Only check nodes that aren't in the closed set
-			auto iter = std::find(closedSet.begin(), closedSet.end(),
-								  neighbor);
-			if (iter == closedSet.end())
+			if (!neighbor->mInClosedSet)
 			{
-				iter = std::find(openSet.begin(), openSet.end(), neighbor);
-				if (iter == openSet.end())
+				if (!neighbor->mInOpenSet)
 				{
 					// Not in the open set, so set parent
 					neighbor->mParent = current;
-					neighbor->h = Math::Abs(neighbor->GetPosition().x - goal->GetPosition().x)
-						+ Math::Abs(neighbor->GetPosition().y - goal->GetPosition().y);
+					neighbor->h = (neighbor->GetPosition() - goal->GetPosition()).Length();
 					// g(x) is the parent's g plus cost of traversing edge
 					neighbor->g = current->g + TileSize;
 					neighbor->f = neighbor->g + neighbor->h;
 					openSet.emplace_back(neighbor);
+					neighbor->mInOpenSet = true;
 				}
 				else
 				{
 					// Compute g(x) cost if current becomes the parent
 					float newG = current->g + TileSize;
-					if (newG < current->g)
+					if (newG < neighbor->g)
 					{
 						// Adopt this node
 						neighbor->mParent = current;
@@ -174,7 +171,8 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 		// Set to current and move from open to closed
 		current = *iter;
 		openSet.erase(iter);
-		closedSet.emplace_back(current);
+		current->mInOpenSet = false;
+		current->mInClosedSet = true;
 	}
 	while (current != goal);
 	

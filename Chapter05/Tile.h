@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -35,6 +35,8 @@ private:
 	float f;
 	float g;
 	float h;
+	bool mInOpenSet;
+	bool mInClosedSet;
 	bool mBlocked;
 	
 	void UpdateTexture();
