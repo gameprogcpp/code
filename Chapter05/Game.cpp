@@ -16,11 +16,13 @@
 #include "SpriteComponent.h"
 #include "Grid.h"
 #include "Enemy.h"
+#include "Actor.h"
 
 Game::Game()
 :mWindow(nullptr)
 ,mSpriteShader(nullptr)
 ,mIsRunning(true)
+,mUpdatingActors(false)
 {
 	
 }
@@ -112,12 +114,12 @@ void Game::ProcessInput()
 		}
 	}
 	
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_ESCAPE])
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
-	if (state[SDL_SCANCODE_B])
+	if (keyState[SDL_SCANCODE_B])
 	{
 		mGrid->BuildTower();
 	}
@@ -129,6 +131,13 @@ void Game::ProcessInput()
 	{
 		mGrid->ProcessClick(x, y);
 	}
+
+	mUpdatingActors = true;
+	for (auto actor : mActors)
+	{
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -145,15 +154,20 @@ void Game::UpdateGame()
 	}
 	mTicksCount = SDL_GetTicks();
 
-	// Make copy of actor vector
-	// (iterate over this in case new actors are created)
-	std::vector<Actor*> copy = mActors;
-
 	// Update all actors
-	for (auto actor : copy)
+	mUpdatingActors = true;
+	for (auto actor : mActors)
 	{
 		actor->Update(deltaTime);
 	}
+	mUpdatingActors = false;
+
+	// Move any pending actors to mActors
+	for (auto pending : mPendingActors)
+	{
+		mActors.emplace_back(pending);
+	}
+	mPendingActors.clear();
 
 	// Add any dead actors to a temp vector
 	std::vector<Actor*> deadActors;
@@ -165,8 +179,7 @@ void Game::UpdateGame()
 		}
 	}
 
-	// Delete any of the dead actors (which will
-	// remove them from mActors)
+	// Delete dead actors (which removes them from mActors)
 	for (auto actor : deadActors)
 	{
 		delete actor;
@@ -232,20 +245,6 @@ void Game::CreateSpriteVerts()
 
 void Game::LoadData()
 {
-	// Load textures
-	LoadTexture("Assets/TileBrown.png");
-	LoadTexture("Assets/TileGreen.png");
-	LoadTexture("Assets/TileGrey.png");
-	LoadTexture("Assets/TileTan.png");
-	LoadTexture("Assets/TileBrownSelected.png");
-	LoadTexture("Assets/TileGreenSelected.png");
-	LoadTexture("Assets/TileGreySelected.png");
-	LoadTexture("Assets/TileTanSelected.png");
-	LoadTexture("Assets/Base.png");
-	LoadTexture("Assets/Tower.png");
-	LoadTexture("Assets/Airplane.png");
-	LoadTexture("Assets/Projectile.png");
-	
 	mGrid = new Grid(this);
 }
 
@@ -267,15 +266,6 @@ void Game::UnloadData()
 	mTextures.clear();
 }
 
-void Game::LoadTexture(const char* fileName)
-{
-	Texture* tex = new Texture();
-	if (tex->Load(fileName))
-	{
-		mTextures.emplace(fileName, tex);
-	}
-}
-
 Texture* Game::GetTexture(const std::string& fileName)
 {
 	Texture* tex = nullptr;
@@ -283,6 +273,19 @@ Texture* Game::GetTexture(const std::string& fileName)
 	if (iter != mTextures.end())
 	{
 		tex = iter->second;
+	}
+	else
+	{
+		tex = new Texture();
+		if (tex->Load(fileName))
+		{
+			mTextures.emplace(fileName, tex);
+		}
+		else
+		{
+			delete tex;
+			tex = nullptr;
+		}
 	}
 	return tex;
 }
@@ -300,12 +303,30 @@ void Game::Shutdown()
 
 void Game::AddActor(Actor* actor)
 {
-	mActors.emplace_back(actor);
+	// If we're updating actors, need to add to pending
+	if (mUpdatingActors)
+	{
+		mPendingActors.emplace_back(actor);
+	}
+	else
+	{
+		mActors.emplace_back(actor);
+	}
 }
 
 void Game::RemoveActor(Actor* actor)
 {
-	auto iter = std::find(mActors.begin(), mActors.end(), actor);
+	// Is it in pending actors?
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors?
+	iter = std::find(mActors.begin(), mActors.end(), actor);
 	if (iter != mActors.end())
 	{
 		// Swap to end of vector and pop off (avoid erase copies)
@@ -316,11 +337,22 @@ void Game::RemoveActor(Actor* actor)
 
 void Game::AddSprite(SpriteComponent* sprite)
 {
-	mSprites.emplace_back(sprite);
-	// Resort sprites by draw order
-	std::sort(mSprites.begin(), mSprites.end(), [](SpriteComponent* a, SpriteComponent* b) {
-		return a->GetDrawOrder() < b->GetDrawOrder();
-	});
+	// Find the insertion point in the sorted vector
+	// (The first element with a higher draw order than me)
+	int myDrawOrder = sprite->GetDrawOrder();
+	auto iter = mSprites.begin();
+	for (;
+		iter != mSprites.end();
+		++iter)
+	{
+		if (myDrawOrder < (*iter)->GetDrawOrder())
+		{
+			break;
+		}
+	}
+
+	// Inserts element before position of iterator
+	mSprites.insert(iter, sprite);
 }
 
 void Game::RemoveSprite(SpriteComponent* sprite)

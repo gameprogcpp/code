@@ -27,7 +27,6 @@ public:
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
 	
-	void LoadTexture(const char* fileName);
 	class Texture* GetTexture(const std::string& fileName);
 	
 	class Grid* GetGrid() { return mGrid; }
@@ -47,6 +46,8 @@ private:
 
 	// All the actors in the game
 	std::vector<class Actor*> mActors;
+	// Any pending actors
+	std::vector<class Actor*> mPendingActors;
 
 	// All the sprite components drawn
 	std::vector<class SpriteComponent*> mSprites;
@@ -60,6 +61,8 @@ private:
 	SDL_GLContext mContext;
 	Uint32 mTicksCount;
 	bool mIsRunning;
+	// Track if we're updating actors right now
+	bool mUpdatingActors;
 
 	// Game-specific
 	std::vector<class Enemy*> mEnemies;
