@@ -51,7 +51,7 @@ bool Game::Initialize()
 	// Force OpenGL to use hardware acceleration
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 6)", 100, 100,
+	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 5)", 100, 100,
 							   1024, 768, SDL_WINDOW_OPENGL);
 	if (!mWindow)
 	{
@@ -165,6 +165,7 @@ void Game::UpdateGame()
 	// Move any pending actors to mActors
 	for (auto pending : mPendingActors)
 	{
+		pending->ComputeWorldTransform();
 		mActors.emplace_back(pending);
 	}
 	mPendingActors.clear();
@@ -214,7 +215,7 @@ void Game::GenerateOutput()
 bool Game::LoadShaders()
 {
 	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders/Sprite"))
+	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
 	{
 		return false;
 	}

@@ -26,7 +26,7 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts,
 	// Create index buffer
 	glGenBuffers(1, &mIndexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	// Specify the vertex attributes
 	// (For now, assume one vertex format)
@@ -48,5 +48,4 @@ VertexArray::~VertexArray()
 void VertexArray::SetActive()
 {
 	glBindVertexArray(mVertexArray);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
 }

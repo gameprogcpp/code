@@ -17,7 +17,7 @@ Actor::Actor(Game* game)
 	,mScale(1.0f)
 	,mRotation(0.0f)
 	,mGame(game)
-	,mRecomputeWorldTransform(false)
+	,mRecomputeWorldTransform(true)
 {
 	mGame->AddActor(this);
 }
