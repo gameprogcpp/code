@@ -6,17 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#pragma once
-#include "Actor.h"
+// Request GLSL 3.3
+#version 330
 
-class Tower : public Actor
+// This corresponds to the output color
+// to the color buffer
+out vec4 outColor;
+
+void main()
 {
-public:
-	Tower(class Game* game);
-	void UpdateActor(float deltaTime) override;
-private:
-	class MoveComponent* mMove;
-	float mNextAttack;
-	const float AttackTime = 2.5f;
-	const float AttackRange = 100.0f;
-};
+	// RGBA of 100% blue, 100% opaque
+    outColor = vec4(0.0, 0.0, 1.0, 1.0);
+}

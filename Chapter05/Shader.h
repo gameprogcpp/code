@@ -16,8 +16,7 @@ class Shader
 public:
 	Shader();
 	~Shader();
-	// Load shader of the specified name, excluding
-	// the .frag/.vert extension
+	// Load the vertex/fragment shaders with the given names
 	bool Load(const std::string& vertName, const std::string& fragName);
 	void Unload();
 	// Set this as the active shader program

@@ -77,14 +77,14 @@ void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
 }
 
 bool Shader::CompileShader(const std::string& fileName,
-				   GLenum shaderType,
-				   GLuint& outShader)
+	GLenum shaderType,
+	GLuint& outShader)
 {
 	// Open file
 	std::ifstream shaderFile(fileName);
 	if (shaderFile.is_open())
 	{
-		// Read all of the text into a string
+		// Read all the text into a string
 		std::stringstream sstream;
 		sstream << shaderFile.rdbuf();
 		std::string contents = sstream.str();

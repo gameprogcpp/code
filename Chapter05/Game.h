@@ -29,9 +29,10 @@ public:
 	
 	class Texture* GetTexture(const std::string& fileName);
 	
-	class Grid* GetGrid() { return mGrid; }
-	std::vector<class Enemy*>& GetEnemies() { return mEnemies; }
-	class Enemy* GetNearestEnemy(const Vector2& pos);
+	// Game-specific (add/remove asteroid)
+	void AddAsteroid(class Asteroid* ast);
+	void RemoveAsteroid(class Asteroid* ast);
+	std::vector<class Asteroid*>& GetAsteroids() { return mAsteroids; }
 private:
 	void ProcessInput();
 	void UpdateGame();
@@ -65,7 +66,6 @@ private:
 	bool mUpdatingActors;
 
 	// Game-specific
-	std::vector<class Enemy*> mEnemies;
-	class Grid* mGrid;
-	float mNextEnemy;
+	class Ship* mShip;
+	std::vector<class Asteroid*> mAsteroids;
 };

@@ -16,6 +16,9 @@ public:
 
 	// Activate this vertex array (so we can draw it)
 	void SetActive();
+
+	unsigned int GetNumIndices() const { return mNumIndices; }
+	unsigned int GetNumVerts() const { return mNumVerts; }
 private:
 	// How many vertices in the vertex buffer?
 	unsigned int mNumVerts;

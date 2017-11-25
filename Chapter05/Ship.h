@@ -7,17 +7,14 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "MoveComponent.h"
-#include "Math.h"
-
-class NavComponent : public MoveComponent
+#include "Actor.h"
+class Ship : public Actor
 {
 public:
-	// Lower update order to update first
-	NavComponent(class Actor* owner, int updateOrder = 10);
-	void Update(float deltaTime) override;
-	void StartPath(const class Tile* start);
-	void TurnTo(const Vector2& pos);
+	Ship(class Game* game);
+
+	void UpdateActor(float deltaTime) override;
+	void ActorInput(const uint8_t* keyState) override;
 private:
-	const class Tile* mNextNode;
+	float mLaserCooldown;
 };

@@ -14,9 +14,10 @@
 #include <algorithm>
 #include "Actor.h"
 #include "SpriteComponent.h"
-#include "Grid.h"
-#include "Enemy.h"
 #include "Actor.h"
+#include "Ship.h"
+#include "Asteroid.h"
+#include "Random.h"
 
 Game::Game()
 :mWindow(nullptr)
@@ -119,18 +120,6 @@ void Game::ProcessInput()
 	{
 		mIsRunning = false;
 	}
-	if (keyState[SDL_SCANCODE_B])
-	{
-		mGrid->BuildTower();
-	}
-	
-	// Process mouse
-	int x, y;
-	Uint32 buttons = SDL_GetMouseState(&x, &y);
-	if (SDL_BUTTON(buttons) & SDL_BUTTON_LEFT)
-	{
-		mGrid->ProcessClick(x, y);
-	}
 
 	mUpdatingActors = true;
 	for (auto actor : mActors)
@@ -190,7 +179,7 @@ void Game::UpdateGame()
 void Game::GenerateOutput()
 {
 	// Set the clear color to dark green
-	glClearColor(0.13f, 0.54f, 0.13f, 1.0f);
+	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
 	// Clear the color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -246,7 +235,16 @@ void Game::CreateSpriteVerts()
 
 void Game::LoadData()
 {
-	mGrid = new Grid(this);
+	// Create player's ship
+	mShip = new Ship(this);
+	mShip->SetRotation(Math::PiOver2);
+
+	// Create asteroids
+	const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++)
+	{
+		new Asteroid(this);
+	}
 }
 
 void Game::UnloadData()
@@ -289,6 +287,21 @@ Texture* Game::GetTexture(const std::string& fileName)
 		}
 	}
 	return tex;
+}
+
+void Game::AddAsteroid(Asteroid* ast)
+{
+	mAsteroids.emplace_back(ast);
+}
+
+void Game::RemoveAsteroid(Asteroid* ast)
+{
+	auto iter = std::find(mAsteroids.begin(),
+		mAsteroids.end(), ast);
+	if (iter != mAsteroids.end())
+	{
+		mAsteroids.erase(iter);
+	}
 }
 
 void Game::Shutdown()
@@ -360,27 +373,4 @@ void Game::RemoveSprite(SpriteComponent* sprite)
 {
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
-}
-
-Enemy* Game::GetNearestEnemy(const Vector2& pos)
-{
-	Enemy* best = nullptr;
-	
-	if (mEnemies.size() > 0)
-	{
-		best = mEnemies[0];
-		// Save the distance squared of first enemy, and test if others are closer
-		float bestDistSq = (pos - mEnemies[0]->GetPosition()).LengthSq();
-		for (size_t i = 1; i < mEnemies.size(); i++)
-		{
-			float newDistSq = (pos - mEnemies[i]->GetPosition()).LengthSq();
-			if (newDistSq < bestDistSq)
-			{
-				bestDistSq = newDistSq;
-				best = mEnemies[i];
-			}
-		}
-	}
-	
-	return best;
 }
