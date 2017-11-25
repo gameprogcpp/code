@@ -178,7 +178,7 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	// Set the clear color to dark green
+	// Set the clear color to grey
 	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
 	// Clear the color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -186,8 +186,7 @@ void Game::GenerateOutput()
 	// Draw all sprite components
 	// Enable alpha blending on the color buffer
 	glEnable(GL_BLEND);
-	glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	// Set shader/vao as active
 	mSpriteShader->SetActive();

@@ -51,7 +51,7 @@ bool Texture::Load(const std::string& fileName)
 	
 	SOIL_free_image_data(image);
 	
-	// Enable linear filtering
+	// Enable bilinear filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	

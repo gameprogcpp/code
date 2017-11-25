@@ -22,7 +22,9 @@ public:
 	int GetWidth() const { return mWidth; }
 	int GetHeight() const { return mHeight; }
 private:
+	// OpenGL ID of this texture
 	unsigned int mTextureID;
+	// Width/height of the texture
 	int mWidth;
 	int mHeight;
 };
