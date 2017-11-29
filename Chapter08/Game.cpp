@@ -18,6 +18,7 @@
 #include "Ship.h"
 #include "Asteroid.h"
 #include "Random.h"
+#include "InputSystem.h"
 
 Game::Game()
 :mWindow(nullptr)
@@ -25,7 +26,6 @@ Game::Game()
 ,mIsRunning(true)
 ,mUpdatingActors(false)
 {
-	
 }
 
 bool Game::Initialize()
@@ -57,6 +57,14 @@ bool Game::Initialize()
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
+		return false;
+	}
+
+	// Initialize input system
+	mInputSystem = new InputSystem();
+	if (!mInputSystem->Initialize())
+	{
+		SDL_Log("Failed to initialize input system");
 		return false;
 	}
 	
@@ -104,6 +112,8 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
+	mInputSystem->PrepareForUpdate();
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -114,9 +124,12 @@ void Game::ProcessInput()
 				break;
 		}
 	}
+
+	mInputSystem->Update();
+	const InputState& state = mInputSystem->GetState();
 	
-	const Uint8* keyState = SDL_GetKeyboardState(NULL);
-	if (keyState[SDL_SCANCODE_ESCAPE])
+	if (state.Keyboard.GetKeyState(SDL_SCANCODE_ESCAPE)
+		== EReleased)
 	{
 		mIsRunning = false;
 	}
@@ -124,7 +137,7 @@ void Game::ProcessInput()
 	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
-		actor->ProcessInput(keyState);
+		actor->ProcessInput(state);
 	}
 	mUpdatingActors = false;
 }
@@ -306,6 +319,10 @@ void Game::RemoveAsteroid(Asteroid* ast)
 void Game::Shutdown()
 {
 	UnloadData();
+
+	mInputSystem->Shutdown();
+	delete mInputSystem;
+
 	delete mSpriteVerts;
 	mSpriteShader->Unload();
 	delete mSpriteShader;

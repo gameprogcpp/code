@@ -22,12 +22,15 @@ enum ButtonState
 class KeyboardState
 {
 public:
+	// Friend so InputSystem can easily update it
 	friend class InputSystem;
-	bool GetKeyValue(SDL_Scancode code) const;
-	ButtonState GetKeyState(SDL_Scancode code) const;
+	// Get just the boolean true/false value of key
+	bool GetKeyValue(int keyCode) const;
+	// Get a state based on current and previous frame
+	ButtonState GetKeyState(int keyCode) const;
 private:
 	const Uint8* mCurrState;
-	const Uint8 mPrevState[SDL_NUM_SCANCODES];
+	Uint8 mPrevState[SDL_NUM_SCANCODES];
 };
 
 // Wrapper that contains current state of input
@@ -39,7 +42,6 @@ struct InputState
 class InputSystem
 {
 public:
-	InputSystem();
 	bool Initialize();
 	void Shutdown();
 

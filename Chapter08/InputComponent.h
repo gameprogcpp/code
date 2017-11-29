@@ -16,7 +16,7 @@ public:
 	// Lower update order to update first
 	InputComponent(class Actor* owner);
 
-	void ProcessInput(const uint8_t* keyState) override;
+	void ProcessInput(const struct InputState& state) override;
 	
 	// Getters/setters for private variables
 	float GetMaxForward() const { return mMaxForwardSpeed; }

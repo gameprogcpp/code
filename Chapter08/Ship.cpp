@@ -11,6 +11,7 @@
 #include "InputComponent.h"
 #include "Game.h"
 #include "Laser.h"
+#include "InputSystem.h"
 
 Ship::Ship(Game* game)
 	:Actor(game)
@@ -35,9 +36,10 @@ void Ship::UpdateActor(float deltaTime)
 	mLaserCooldown -= deltaTime;
 }
 
-void Ship::ActorInput(const uint8_t* keyState)
+void Ship::ActorInput(const InputState& state)
 {
-	if (keyState[SDL_SCANCODE_SPACE] && mLaserCooldown <= 0.0f)
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_SPACE)
+		&& mLaserCooldown <= 0.0f)
 	{
 		// Create a laser and set its position/rotation to mine
 		Laser* laser = new Laser(GetGame());
