@@ -42,6 +42,7 @@ public:
 
 	// For mouse position
 	const Vector2& GetPosition() const { return mMousePos; }
+	bool IsRelative() const { return mIsRelative; }
 
 	// For buttons
 	bool GetButtonValue(int button) const;
@@ -52,6 +53,8 @@ private:
 	// Store button data
 	Uint32 mCurrButtons;
 	Uint32 mPrevButtons;
+	// Are we in relative mouse mode
+	bool mIsRelative;
 };
 
 // Wrapper that contains current state of input
@@ -73,6 +76,8 @@ public:
 	void Update();
 
 	const InputState& GetState() const { return mState; }
+
+	void SetRelativeMouseMode(bool value);
 private:
 	InputState mState;
 };

@@ -102,13 +102,32 @@ void InputSystem::PrepareForUpdate()
 
 	// Mouse
 	mState.Mouse.mPrevButtons = mState.Mouse.mCurrButtons;
+	mState.Mouse.mIsRelative = false;
 }
 
 void InputSystem::Update()
 {
 	// Mouse
 	int x = 0, y = 0;
-	mState.Mouse.mCurrButtons = SDL_GetMouseState(&x, &y);
+	if (mState.Mouse.mIsRelative)
+	{
+		mState.Mouse.mCurrButtons = 
+			SDL_GetRelativeMouseState(&x, &y);
+	}
+	else
+	{
+		mState.Mouse.mCurrButtons = 
+			SDL_GetMouseState(&x, &y);
+	}
+
 	mState.Mouse.mMousePos.x = static_cast<float>(x);
 	mState.Mouse.mMousePos.y = static_cast<float>(y);
+}
+
+void InputSystem::SetRelativeMouseMode(bool value)
+{
+	SDL_bool set = value ? SDL_TRUE : SDL_FALSE;
+	SDL_SetRelativeMouseMode(set);
+
+	mState.Mouse.mIsRelative = value;
 }
