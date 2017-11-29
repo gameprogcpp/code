@@ -17,22 +17,54 @@ bool KeyboardState::GetKeyValue(int keyCode) const
 
 ButtonState KeyboardState::GetKeyState(int keyCode) const
 {
-	if (mCurrState[keyCode] == 0)
+	if (mPrevState[keyCode] == 0)
 	{
-		if (mPrevState[keyCode] == 0)
+		if (mCurrState[keyCode] == 0)
 		{
 			return ENone;
 		}
 		else
 		{
-			return EReleased;
+			return EPressed;
 		}
 	}
-	else // must be 1
+	else // Prev state must be 1
 	{
-		if (mPrevState[keyCode] == 0)
+		if (mCurrState[keyCode] == 0)
+		{
+			return EReleased;
+		}
+		else
+		{
+			return EHeld;
+		}
+	}
+}
+
+bool MouseState::GetButtonValue(int button) const
+{
+	return (SDL_BUTTON(button) & mCurrButtons) == 1;
+}
+
+ButtonState MouseState::GetButtonState(int button) const
+{
+	int mask = SDL_BUTTON(button);
+	if ((mask & mPrevButtons) == 0)
+	{
+		if ((mask & mCurrButtons) == 0)
+		{
+			return ENone;
+		}
+		else
 		{
 			return EPressed;
+		}
+	}
+	else
+	{
+		if ((mask & mCurrButtons) == 0)
+		{
+			return EReleased;
 		}
 		else
 		{
@@ -43,12 +75,16 @@ ButtonState KeyboardState::GetKeyState(int keyCode) const
 
 bool InputSystem::Initialize()
 {
+	// Keyboard
 	// Assign current state pointer
 	mState.Keyboard.mCurrState = SDL_GetKeyboardState(NULL);
 	// Clear previous state memory
 	memset(mState.Keyboard.mPrevState, 0,
 		SDL_NUM_SCANCODES);
 
+	// Mouse (just set everything to 0)
+	mState.Mouse.mCurrButtons = 0;
+	mState.Mouse.mPrevButtons = 0;
 	return true;
 }
 
@@ -63,8 +99,16 @@ void InputSystem::PrepareForUpdate()
 	memcpy(mState.Keyboard.mPrevState,
 		mState.Keyboard.mCurrState,
 		SDL_NUM_SCANCODES);
+
+	// Mouse
+	mState.Mouse.mPrevButtons = mState.Mouse.mCurrButtons;
 }
 
 void InputSystem::Update()
 {
+	// Mouse
+	int x = 0, y = 0;
+	mState.Mouse.mCurrButtons = SDL_GetMouseState(&x, &y);
+	mState.Mouse.mMousePos.x = static_cast<float>(x);
+	mState.Mouse.mMousePos.y = static_cast<float>(y);
 }
