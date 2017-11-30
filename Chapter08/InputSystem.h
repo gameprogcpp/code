@@ -42,6 +42,7 @@ public:
 
 	// For mouse position
 	const Vector2& GetPosition() const { return mMousePos; }
+	const Vector2& GetScrollWheel() const { return mScrollWheel; }
 	bool IsRelative() const { return mIsRelative; }
 
 	// For buttons
@@ -50,6 +51,8 @@ public:
 private:
 	// Store current mouse position
 	Vector2 mMousePos;
+	// Motion of scroll wheel
+	Vector2 mScrollWheel;
 	// Store button data
 	Uint32 mCurrButtons;
 	Uint32 mPrevButtons;
@@ -74,6 +77,8 @@ public:
 	void PrepareForUpdate();
 	// Called after SDL_PollEvents loop
 	void Update();
+	// Called to process an SDL event in input system
+	void ProcessEvent(union SDL_Event& event);
 
 	const InputState& GetState() const { return mState; }
 

@@ -103,6 +103,7 @@ void InputSystem::PrepareForUpdate()
 	// Mouse
 	mState.Mouse.mPrevButtons = mState.Mouse.mCurrButtons;
 	mState.Mouse.mIsRelative = false;
+	mState.Mouse.mScrollWheel = Vector2::Zero;
 }
 
 void InputSystem::Update()
@@ -122,6 +123,20 @@ void InputSystem::Update()
 
 	mState.Mouse.mMousePos.x = static_cast<float>(x);
 	mState.Mouse.mMousePos.y = static_cast<float>(y);
+}
+
+void InputSystem::ProcessEvent(SDL_Event& event)
+{
+	switch (event.type)
+	{
+	case SDL_MOUSEWHEEL:
+		mState.Mouse.mScrollWheel = Vector2(
+			static_cast<float>(event.wheel.x),
+			static_cast<float>(event.wheel.y));
+		break;
+	default:
+		break;
+	}
 }
 
 void InputSystem::SetRelativeMouseMode(bool value)
