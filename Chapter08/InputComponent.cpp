@@ -24,11 +24,11 @@ void InputComponent::ProcessInput(const InputState& state)
 {
 	// Calculate forward speed for MoveComponent
 	float forwardSpeed = 0.0f;
-	if (state.Keyboard.GetKeyValue(mForwardKey))
+	if (state.Keyboard.GetKeyValue(SDL_Scancode(mForwardKey)))
 	{
 		forwardSpeed += mMaxForwardSpeed;
 	}
-	if (state.Keyboard.GetKeyValue(mBackKey))
+	if (state.Keyboard.GetKeyValue(SDL_Scancode(mBackKey)))
 	{
 		forwardSpeed -= mMaxForwardSpeed;
 	}
@@ -36,11 +36,11 @@ void InputComponent::ProcessInput(const InputState& state)
 
 	// Calculate angular speed for MoveComponent
 	float angularSpeed = 0.0f;
-	if (state.Keyboard.GetKeyValue(mClockwiseKey))
+	if (state.Keyboard.GetKeyValue(SDL_Scancode(mClockwiseKey)))
 	{
 		angularSpeed += mMaxAngularSpeed;
 	}
-	if (state.Keyboard.GetKeyValue(mCounterClockwiseKey))
+	if (state.Keyboard.GetKeyValue(SDL_Scancode(mCounterClockwiseKey)))
 	{
 		angularSpeed -= mMaxAngularSpeed;
 	}
