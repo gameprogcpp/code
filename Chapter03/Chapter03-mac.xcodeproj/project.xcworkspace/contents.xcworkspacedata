@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Game-mac.xcodeproj">
+      location = "self:/Users/Sanjay/gameprogcpp-final/Chapter03/Chapter03-mac.xcodeproj">
    </FileRef>
 </Workspace>
