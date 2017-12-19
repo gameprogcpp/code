@@ -1,0 +1,358 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9223C4781F009428009A94D7 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4671F009428009A94D7 /* Game.cpp */; };
+		9223C4791F009428009A94D7 /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4681F009428009A94D7 /* Actor.cpp */; };
+		9223C47A1F009428009A94D7 /* AnimSpriteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C46A1F009428009A94D7 /* AnimSpriteComponent.cpp */; };
+		9223C47B1F009428009A94D7 /* BGSpriteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C46C1F009428009A94D7 /* BGSpriteComponent.cpp */; };
+		9223C47C1F009428009A94D7 /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C46E1F009428009A94D7 /* Component.cpp */; };
+		9223C47D1F009428009A94D7 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4711F009428009A94D7 /* Main.cpp */; };
+		9223C47E1F009428009A94D7 /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4721F009428009A94D7 /* Math.cpp */; };
+		9223C47F1F009428009A94D7 /* Ship.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4741F009428009A94D7 /* Ship.cpp */; };
+		9223C4801F009428009A94D7 /* SpriteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4761F009428009A94D7 /* SpriteComponent.cpp */; };
+		92D324FB1B697389005A86C7 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92D324FA1B697389005A86C7 /* CoreFoundation.framework */; };
+		92E46E941B6353E50035CD21 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E46E931B6353E50035CD21 /* OpenGL.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9223C4671F009428009A94D7 /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
+		9223C4681F009428009A94D7 /* Actor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Actor.cpp; sourceTree = "<group>"; };
+		9223C4691F009428009A94D7 /* Actor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Actor.h; sourceTree = "<group>"; };
+		9223C46A1F009428009A94D7 /* AnimSpriteComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimSpriteComponent.cpp; sourceTree = "<group>"; };
+		9223C46B1F009428009A94D7 /* AnimSpriteComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimSpriteComponent.h; sourceTree = "<group>"; };
+		9223C46C1F009428009A94D7 /* BGSpriteComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BGSpriteComponent.cpp; sourceTree = "<group>"; };
+		9223C46D1F009428009A94D7 /* BGSpriteComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSpriteComponent.h; sourceTree = "<group>"; };
+		9223C46E1F009428009A94D7 /* Component.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Component.cpp; sourceTree = "<group>"; };
+		9223C46F1F009428009A94D7 /* Component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Component.h; sourceTree = "<group>"; };
+		9223C4701F009428009A94D7 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		9223C4711F009428009A94D7 /* Main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Main.cpp; sourceTree = "<group>"; };
+		9223C4721F009428009A94D7 /* Math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Math.cpp; sourceTree = "<group>"; };
+		9223C4731F009428009A94D7 /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Math.h; sourceTree = "<group>"; };
+		9223C4741F009428009A94D7 /* Ship.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ship.cpp; sourceTree = "<group>"; };
+		9223C4751F009428009A94D7 /* Ship.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ship.h; sourceTree = "<group>"; };
+		9223C4761F009428009A94D7 /* SpriteComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteComponent.cpp; sourceTree = "<group>"; };
+		9223C4771F009428009A94D7 /* SpriteComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteComponent.h; sourceTree = "<group>"; };
+		92D324FA1B697389005A86C7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		92E46DF71B634EA30035CD21 /* Game-mac */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Game-mac"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92E46E931B6353E50035CD21 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		92E46DF41B634EA30035CD21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92D324FB1B697389005A86C7 /* CoreFoundation.framework in Frameworks */,
+				92E46E941B6353E50035CD21 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		92E46DEE1B634EA30035CD21 = {
+			isa = PBXGroup;
+			children = (
+				9223C4681F009428009A94D7 /* Actor.cpp */,
+				9223C4691F009428009A94D7 /* Actor.h */,
+				9223C46A1F009428009A94D7 /* AnimSpriteComponent.cpp */,
+				9223C46B1F009428009A94D7 /* AnimSpriteComponent.h */,
+				9223C46C1F009428009A94D7 /* BGSpriteComponent.cpp */,
+				9223C46D1F009428009A94D7 /* BGSpriteComponent.h */,
+				9223C46E1F009428009A94D7 /* Component.cpp */,
+				9223C46F1F009428009A94D7 /* Component.h */,
+				9223C4671F009428009A94D7 /* Game.cpp */,
+				9223C4701F009428009A94D7 /* Game.h */,
+				9223C4711F009428009A94D7 /* Main.cpp */,
+				9223C4721F009428009A94D7 /* Math.cpp */,
+				9223C4731F009428009A94D7 /* Math.h */,
+				9223C4741F009428009A94D7 /* Ship.cpp */,
+				9223C4751F009428009A94D7 /* Ship.h */,
+				9223C4761F009428009A94D7 /* SpriteComponent.cpp */,
+				9223C4771F009428009A94D7 /* SpriteComponent.h */,
+				92E46DF81B634EA30035CD21 /* Products */,
+				92D324FA1B697389005A86C7 /* CoreFoundation.framework */,
+				92E46E931B6353E50035CD21 /* OpenGL.framework */,
+			);
+			sourceTree = "<group>";
+		};
+		92E46DF81B634EA30035CD21 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				92E46DF71B634EA30035CD21 /* Game-mac */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		92E46DF61B634EA30035CD21 /* Game-mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92E46DFE1B634EA40035CD21 /* Build configuration list for PBXNativeTarget "Game-mac" */;
+			buildPhases = (
+				92E46DF31B634EA30035CD21 /* Sources */,
+				92E46DF41B634EA30035CD21 /* Frameworks */,
+				92E46EA11B63615B0035CD21 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Game-mac";
+			productName = "Game-mac";
+			productReference = 92E46DF71B634EA30035CD21 /* Game-mac */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		92E46DEF1B634EA30035CD21 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Sanjay Madhav";
+				TargetAttributes = {
+					92E46DF61B634EA30035CD21 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
+			};
+			buildConfigurationList = 92E46DF21B634EA30035CD21 /* Build configuration list for PBXProject "Chapter02-mac" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 92E46DEE1B634EA30035CD21;
+			productRefGroup = 92E46DF81B634EA30035CD21 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				92E46DF61B634EA30035CD21 /* Game-mac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		92E46EA11B63615B0035CD21 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -d \"$BUILD_DIR/Debug\" ]; then\n    cp \"$SRCROOT\"/../external/GLEW/lib/mac/*.dylib $BUILD_DIR/Debug\n    cp \"$SRCROOT\"/../external/SDL/lib/mac/*.dylib $BUILD_DIR/Debug\nfi\n\nif [ -d \"$BUILD_DIR/Release\" ]; then\n    cp \"$SRCROOT\"/../external/GLEW/lib/mac/*.dylib $BUILD_DIR/Release\n    cp \"$SRCROOT\"/../external/SDL/lib/mac/*.dylib $BUILD_DIR/Release\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		92E46DF31B634EA30035CD21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9223C47D1F009428009A94D7 /* Main.cpp in Sources */,
+				9223C47E1F009428009A94D7 /* Math.cpp in Sources */,
+				9223C47A1F009428009A94D7 /* AnimSpriteComponent.cpp in Sources */,
+				9223C47B1F009428009A94D7 /* BGSpriteComponent.cpp in Sources */,
+				9223C4781F009428009A94D7 /* Game.cpp in Sources */,
+				9223C4801F009428009A94D7 /* SpriteComponent.cpp in Sources */,
+				9223C47F1F009428009A94D7 /* Ship.cpp in Sources */,
+				9223C4791F009428009A94D7 /* Actor.cpp in Sources */,
+				9223C47C1F009428009A94D7 /* Component.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		92E46DFC1B634EA40035CD21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		92E46DFD1B634EA40035CD21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		92E46DFF1B634EA40035CD21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_CPP_RTTI = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../external/SDL/include",
+					"$(SRCROOT)/../external/GLEW/include",
+					"$(SRCROOT)/../external/SOIL/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../external/GLEW/lib/mac",
+					"$(SRCROOT)/../external/SDL/lib/mac",
+					"$(SRCROOT)/../external/SOIL/lib/mac",
+				);
+				OTHER_LDFLAGS = (
+					"-lGLEW.2.1.0",
+					"-lSDL2-2.0.0",
+					"-lSDL2_mixer-2.0.0",
+					"-lSDL2_ttf-2.0.0",
+					"-lSOIL",
+					"-lSDL2_image-2.0.0",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		92E46E001B634EA40035CD21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_CPP_RTTI = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../external/SDL/include",
+					"$(SRCROOT)/../external/GLEW/include",
+					"$(SRCROOT)/../external/SOIL/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../external/GLEW/lib/mac",
+					"$(SRCROOT)/../external/SDL/lib/mac",
+					"$(SRCROOT)/../external/SOIL/lib/mac",
+				);
+				OTHER_LDFLAGS = (
+					"-lGLEW.2.1.0",
+					"-lSDL2-2.0.0",
+					"-lSDL2_mixer-2.0.0",
+					"-lSDL2_ttf-2.0.0",
+					"-lSOIL",
+					"-lSDL2_image-2.0.0",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		92E46DF21B634EA30035CD21 /* Build configuration list for PBXProject "Chapter02-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92E46DFC1B634EA40035CD21 /* Debug */,
+				92E46DFD1B634EA40035CD21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92E46DFE1B634EA40035CD21 /* Build configuration list for PBXNativeTarget "Game-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92E46DFF1B634EA40035CD21 /* Debug */,
+				92E46E001B634EA40035CD21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 92E46DEF1B634EA30035CD21 /* Project object */;
+}
