@@ -16,7 +16,6 @@
 		9223C47E1F009428009A94D7 /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4721F009428009A94D7 /* Math.cpp */; };
 		9223C4801F009428009A94D7 /* SpriteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4761F009428009A94D7 /* SpriteComponent.cpp */; };
 		9223C48B1F0CA3CE009A94D7 /* MoveComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C48A1F0CA3CE009A94D7 /* MoveComponent.cpp */; };
-		9223C4941F0CA766009A94D7 /* CollisionComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4901F0CA766009A94D7 /* CollisionComponent.cpp */; };
 		9223C4951F0CA766009A94D7 /* CircleComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9223C4911F0CA766009A94D7 /* CircleComponent.cpp */; };
 		92279F471F17101E00D5F4B9 /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92279F451F17101E00D5F4B9 /* VertexArray.cpp */; };
 		92CF0D721F3BBBE50086A0F3 /* CameraActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92CF0D681F3BBBE50086A0F3 /* CameraActor.cpp */; };
@@ -47,9 +46,7 @@
 		9223C4771F009428009A94D7 /* SpriteComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteComponent.h; sourceTree = "<group>"; };
 		9223C48A1F0CA3CE009A94D7 /* MoveComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MoveComponent.cpp; sourceTree = "<group>"; };
 		9223C48C1F0CA3D4009A94D7 /* MoveComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveComponent.h; sourceTree = "<group>"; };
-		9223C4901F0CA766009A94D7 /* CollisionComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionComponent.cpp; sourceTree = "<group>"; };
 		9223C4911F0CA766009A94D7 /* CircleComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircleComponent.cpp; sourceTree = "<group>"; };
-		9223C4921F0CA766009A94D7 /* CollisionComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollisionComponent.h; sourceTree = "<group>"; };
 		9223C4931F0CA766009A94D7 /* CircleComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleComponent.h; sourceTree = "<group>"; };
 		92279F451F17101E00D5F4B9 /* VertexArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexArray.cpp; sourceTree = "<group>"; };
 		92279F461F17101E00D5F4B9 /* VertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexArray.h; sourceTree = "<group>"; };
@@ -84,31 +81,29 @@
 		92E46DEE1B634EA30035CD21 = {
 			isa = PBXGroup;
 			children = (
-				92CF0D681F3BBBE50086A0F3 /* CameraActor.cpp */,
-				92CF0D691F3BBBE50086A0F3 /* CameraActor.h */,
-				92CF0D6A1F3BBBE50086A0F3 /* Mesh.cpp */,
-				92CF0D6B1F3BBBE50086A0F3 /* Mesh.h */,
-				92CF0D6C1F3BBBE50086A0F3 /* MeshComponent.cpp */,
-				92CF0D6D1F3BBBE50086A0F3 /* MeshComponent.h */,
-				92CF0D6E1F3BBBE50086A0F3 /* PlaneActor.cpp */,
-				92CF0D6F1F3BBBE50086A0F3 /* PlaneActor.h */,
-				92CF0D701F3BBBE50086A0F3 /* Renderer.cpp */,
-				92CF0D711F3BBBE50086A0F3 /* Renderer.h */,
 				9223C4681F009428009A94D7 /* Actor.cpp */,
 				9223C4691F009428009A94D7 /* Actor.h */,
+				92CF0D681F3BBBE50086A0F3 /* CameraActor.cpp */,
+				92CF0D691F3BBBE50086A0F3 /* CameraActor.h */,
 				9223C46E1F009428009A94D7 /* Component.cpp */,
 				9223C46F1F009428009A94D7 /* Component.h */,
 				9223C4911F0CA766009A94D7 /* CircleComponent.cpp */,
 				9223C4931F0CA766009A94D7 /* CircleComponent.h */,
-				9223C4901F0CA766009A94D7 /* CollisionComponent.cpp */,
-				9223C4921F0CA766009A94D7 /* CollisionComponent.h */,
 				9223C4671F009428009A94D7 /* Game.cpp */,
 				9223C4701F009428009A94D7 /* Game.h */,
 				9223C4711F009428009A94D7 /* Main.cpp */,
 				9223C4721F009428009A94D7 /* Math.cpp */,
 				9223C4731F009428009A94D7 /* Math.h */,
+				92CF0D6A1F3BBBE50086A0F3 /* Mesh.cpp */,
+				92CF0D6B1F3BBBE50086A0F3 /* Mesh.h */,
+				92CF0D6C1F3BBBE50086A0F3 /* MeshComponent.cpp */,
+				92CF0D6D1F3BBBE50086A0F3 /* MeshComponent.h */,
 				9223C48A1F0CA3CE009A94D7 /* MoveComponent.cpp */,
 				9223C48C1F0CA3D4009A94D7 /* MoveComponent.h */,
+				92CF0D6E1F3BBBE50086A0F3 /* PlaneActor.cpp */,
+				92CF0D6F1F3BBBE50086A0F3 /* PlaneActor.h */,
+				92CF0D701F3BBBE50086A0F3 /* Renderer.cpp */,
+				92CF0D711F3BBBE50086A0F3 /* Renderer.h */,
 				9206FDC71F140D40005078A2 /* Shader.cpp */,
 				9206FDC81F140D40005078A2 /* Shader.h */,
 				9223C4761F009428009A94D7 /* SpriteComponent.cpp */,
@@ -158,7 +153,7 @@
 		92E46DEF1B634EA30035CD21 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Sanjay Madhav";
 				TargetAttributes = {
 					92E46DF61B634EA30035CD21 = {
@@ -166,7 +161,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 92E46DF21B634EA30035CD21 /* Build configuration list for PBXProject "Chapter7-mac" */;
+			buildConfigurationList = 92E46DF21B634EA30035CD21 /* Build configuration list for PBXProject "Chapter06-mac" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -204,7 +199,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9223C4941F0CA766009A94D7 /* CollisionComponent.cpp in Sources */,
 				92279F471F17101E00D5F4B9 /* VertexArray.cpp in Sources */,
 				9223C47D1F009428009A94D7 /* Main.cpp in Sources */,
 				9223C47E1F009428009A94D7 /* Math.cpp in Sources */,
@@ -235,14 +229,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -280,14 +280,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -374,7 +380,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		92E46DF21B634EA30035CD21 /* Build configuration list for PBXProject "Chapter7-mac" */ = {
+		92E46DF21B634EA30035CD21 /* Build configuration list for PBXProject "Chapter06-mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				92E46DFC1B634EA40035CD21 /* Debug */,
