@@ -16,7 +16,6 @@
     <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="CameraActor.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
-    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -38,7 +37,6 @@
     <ClInclude Include="AudioSystem.h" />
     <ClInclude Include="CameraActor.h" />
     <ClInclude Include="CircleComponent.h" />
-    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Math.h" />
@@ -65,6 +63,7 @@
     <ProjectGuid>{BC508D87-495F-4554-932D-DD68388B63CC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Game</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

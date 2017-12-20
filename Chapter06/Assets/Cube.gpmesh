@@ -5,7 +5,7 @@
 	"textures":[
 		"Assets/Cube.png"
 	],
-   "specularPower":100.0,
+	"specularPower":100.0,
 	"vertices":[
 		[-0.5,-0.5,-0.5,0,0,-1,0,0],
 		[0.5,-0.5,-0.5,0,0,-1,1,0],
