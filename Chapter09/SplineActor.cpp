@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "SplineActor.h"
@@ -41,7 +41,7 @@ SplineActor::SplineActor(Game* game)
 	mCameraComp->SetPaused(false);
 }
 
-void SplineActor::ProcessInput(const uint8_t* keys)
+void SplineActor::ActorInput(const uint8_t* keys)
 {
 	
 }

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -26,6 +26,8 @@ public:
 	const std::string& GetShaderName() const { return mShaderName; }
 	// Get object space bounding sphere radius
 	float GetRadius() const { return mRadius; }
+	// Get specular power of mesh
+	float GetSpecPower() const { return mSpecPower; }
 private:
 	// Textures associated with this mesh
 	std::vector<class Texture*> mTextures;
@@ -35,4 +37,6 @@ private:
 	std::string mShaderName;
 	// Stores object space bounding sphere radius
 	float mRadius;
+	// Specular power of surface
+	float mSpecPower;
 };

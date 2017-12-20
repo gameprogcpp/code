@@ -31,9 +31,6 @@
     <ClCompile Include="CircleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MoveComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,19 +64,19 @@
     <ClCompile Include="AudioComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FPSActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FPSCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FollowActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FollowCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OrbitActor.cpp">
@@ -112,9 +109,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CircleComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MoveComponent.h">
@@ -150,19 +144,19 @@
     <ClInclude Include="AudioComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="FPSActor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="CameraComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FPSCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FollowActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FollowCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="OrbitActor.h">

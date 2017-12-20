@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "OrbitActor.h"
@@ -23,7 +23,7 @@ OrbitActor::OrbitActor(Game* game)
 	mCameraComp = new OrbitCamera(this);
 }
 
-void OrbitActor::ProcessInput(const uint8_t* keys)
+void OrbitActor::ActorInput(const uint8_t* keys)
 {
 	// Mouse rotation
 	// Get relative movement from SDL

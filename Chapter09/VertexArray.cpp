@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "VertexArray.h"
@@ -26,7 +26,7 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts,
 	// Create index buffer
 	glGenBuffers(1, &mIndexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	// Specify the vertex attributes
 	// (For now, assume one vertex format)
@@ -53,5 +53,4 @@ VertexArray::~VertexArray()
 void VertexArray::SetActive()
 {
 	glBindVertexArray(mVertexArray);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
 }

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Mesh.h"
@@ -19,6 +19,7 @@
 Mesh::Mesh()
 	:mVertexArray(nullptr)
 	,mRadius(0.0f)
+	,mSpecPower(100.0f)
 {
 }
 
@@ -26,7 +27,7 @@ Mesh::~Mesh()
 {
 }
 
-bool Mesh::Load(const std::string & fileName, Renderer* renderer)
+bool Mesh::Load(const std::string& fileName, Renderer* renderer)
 {
 	std::ifstream file(fileName);
 	if (!file.is_open())
@@ -71,6 +72,8 @@ bool Mesh::Load(const std::string & fileName, Renderer* renderer)
 		return false;
 	}
 
+	mSpecPower = static_cast<float>(doc["specularPower"].GetDouble());
+
 	for (rapidjson::SizeType i = 0; i < textures.Size(); i++)
 	{
 		// Is this texture already loaded?
@@ -79,7 +82,7 @@ bool Mesh::Load(const std::string & fileName, Renderer* renderer)
 		if (t == nullptr)
 		{
 			// Try loading the texture
-			t = renderer->LoadTexture(texName.c_str());
+			t = renderer->GetTexture(texName);
 			if (t == nullptr)
 			{
 				// If it's still null, just use the default texture

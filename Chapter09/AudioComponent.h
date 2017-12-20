@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -19,6 +19,7 @@ public:
 	~AudioComponent();
 
 	void Update(float deltaTime) override;
+	void OnUpdateWorldTransform() override;
 
 	SoundEvent PlayEvent(const std::string& name);
 	void StopAllEvents();

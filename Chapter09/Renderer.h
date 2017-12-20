@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -21,8 +21,6 @@ struct DirectionalLight
 	Vector3 mDiffuseColor;
 	// Specular color
 	Vector3 mSpecColor;
-	// Specular power
-	float mSpecPower;
 };
 
 class Renderer
@@ -31,7 +29,7 @@ public:
 	Renderer(class Game* game);
 	~Renderer();
 
-	bool Initialize();
+	bool Initialize(float screenWidth, float screenHeight);
 	void Shutdown();
 	void UnloadData();
 
@@ -43,9 +41,7 @@ public:
 	void AddMeshComp(class MeshComponent* mesh);
 	void RemoveMeshComp(class MeshComponent* mesh);
 
-	class Texture* LoadTexture(const char* fileName);
 	class Texture* GetTexture(const std::string& fileName);
-	class Mesh* LoadMesh(const char* fileName);
 	class Mesh* GetMesh(const std::string& fileName);
 
 	void SetViewMatrix(const Matrix4& view) { mView = view; }
@@ -60,6 +56,8 @@ public:
 	// y = [-screenHeight/2, +screenHeight/2]
 	// z = [0, 1) -- 0 is closer to camera, 1 is further
 	Vector3 Unproject(const Vector3& screenPoint) const;
+	float GetScreenWidth() const { return mScreenWidth; }
+	float GetScreenHeight() const { return mScreenHeight; }
 private:
 	bool LoadShaders();
 	void CreateSpriteVerts();
@@ -90,6 +88,9 @@ private:
 	// View/projection for 3D shaders
 	Matrix4 mView;
 	Matrix4 mProjection;
+	// Width/height of screen
+	float mScreenWidth;
+	float mScreenHeight;
 
 	// Lighting data
 	Vector3 mAmbientLight;
