@@ -15,7 +15,7 @@ public:
 	CameraActor(class Game* game);
 
 	void UpdateActor(float deltaTime) override;
-	void ProcessInput(const uint8_t* keys) override;
+	void ActorInput(const uint8_t* keys) override;
 private:
 	class MoveComponent* mMoveComp;
 };

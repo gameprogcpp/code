@@ -34,11 +34,15 @@ private:
 	
 	// All the actors in the game
 	std::vector<class Actor*> mActors;
+	// Any pending actors
+	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
 
 	Uint32 mTicksCount;
 	bool mIsRunning;
+	// Track if we're updating actors right now
+	bool mUpdatingActors;
 
 	// Game-specific code
 	class CameraActor* mCameraActor;

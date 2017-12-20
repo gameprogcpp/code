@@ -18,6 +18,7 @@
 Game::Game()
 :mRenderer(nullptr)
 ,mIsRunning(true)
+,mUpdatingActors(false)
 {
 	
 }
@@ -96,15 +97,21 @@ void Game::UpdateGame()
 	}
 	mTicksCount = SDL_GetTicks();
 
-	// Make copy of actor vector
-	// (iterate over this in case new actors are created)
-	std::vector<Actor*> copy = mActors;
-
 	// Update all actors
-	for (auto actor : copy)
+	mUpdatingActors = true;
+	for (auto actor : mActors)
 	{
 		actor->Update(deltaTime);
 	}
+	mUpdatingActors = false;
+
+	// Move any pending actors to mActors
+	for (auto pending : mPendingActors)
+	{
+		pending->ComputeWorldTransform();
+		mActors.emplace_back(pending);
+	}
+	mPendingActors.clear();
 
 	// Add any dead actors to a temp vector
 	std::vector<Actor*> deadActors;
@@ -116,8 +123,7 @@ void Game::UpdateGame()
 		}
 	}
 
-	// Delete any of the dead actors (which will
-	// remove them from mActors)
+	// Delete dead actors (which removes them from mActors)
 	for (auto actor : deadActors)
 	{
 		delete actor;
@@ -235,12 +241,30 @@ void Game::Shutdown()
 
 void Game::AddActor(Actor* actor)
 {
-	mActors.emplace_back(actor);
+	// If we're updating actors, need to add to pending
+	if (mUpdatingActors)
+	{
+		mPendingActors.emplace_back(actor);
+	}
+	else
+	{
+		mActors.emplace_back(actor);
+	}
 }
 
 void Game::RemoveActor(Actor* actor)
 {
-	auto iter = std::find(mActors.begin(), mActors.end(), actor);
+	// Is it in pending actors?
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors?
+	iter = std::find(mActors.begin(), mActors.end(), actor);
 	if (iter != mActors.end())
 	{
 		// Swap to end of vector and pop off (avoid erase copies)

@@ -31,7 +31,7 @@ void CameraActor::UpdateActor(float deltaTime)
 	GetGame()->GetRenderer()->SetViewMatrix(view);
 }
 
-void CameraActor::ProcessInput(const uint8_t* keys)
+void CameraActor::ActorInput(const uint8_t* keys)
 {
 	float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;

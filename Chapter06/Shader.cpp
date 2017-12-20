@@ -25,15 +25,15 @@ Shader::~Shader()
 
 }
 
-bool Shader::Load(const std::string& name)
+bool Shader::Load(const std::string& vertName, const std::string& fragName)
 {
 	// Compile vertex and pixel shaders
-	if (!CompileShader(name + ".vert",
-					   GL_VERTEX_SHADER,
-					   mVertexShader) ||
-		!CompileShader(name + ".frag",
-					   GL_FRAGMENT_SHADER,
-					   mFragShader))
+	if (!CompileShader(vertName,
+		GL_VERTEX_SHADER,
+		mVertexShader) ||
+		!CompileShader(fragName,
+			GL_FRAGMENT_SHADER,
+			mFragShader))
 	{
 		return false;
 	}
@@ -91,14 +91,14 @@ void Shader::SetFloatUniform(const char* name, float value)
 }
 
 bool Shader::CompileShader(const std::string& fileName,
-				   GLenum shaderType,
-				   GLuint& outShader)
+	GLenum shaderType,
+	GLuint& outShader)
 {
 	// Open file
 	std::ifstream shaderFile(fileName);
 	if (shaderFile.is_open())
 	{
-		// Read all of the text into a string
+		// Read all the text into a string
 		std::stringstream sstream;
 		sstream << shaderFile.rdbuf();
 		std::string contents = sstream.str();
