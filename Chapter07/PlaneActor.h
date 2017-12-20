@@ -6,20 +6,11 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-// Request GLSL 3.3
-#version 330
+#pragma once
+#include "Actor.h"
 
-// Tex coord input from vertex shader
-in vec2 fragTexCoord;
-
-// This corresponds to the output color to the color buffer
-out vec4 outColor;
-
-// This is used for the texture sampling
-uniform sampler2D uTexture;
-
-void main()
+class PlaneActor : public Actor
 {
-	// Sample color from texture
-    outColor = texture(uTexture, fragTexCoord);
-}
+public:
+	PlaneActor(class Game* game);
+};

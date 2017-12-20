@@ -6,20 +6,22 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-// Request GLSL 3.3
-#version 330
+#include "Component.h"
+#include "Actor.h"
 
-// Tex coord input from vertex shader
-in vec2 fragTexCoord;
-
-// This corresponds to the output color to the color buffer
-out vec4 outColor;
-
-// This is used for the texture sampling
-uniform sampler2D uTexture;
-
-void main()
+Component::Component(Actor* owner, int updateOrder)
+	:mOwner(owner)
+	,mUpdateOrder(updateOrder)
 {
-	// Sample color from texture
-    outColor = texture(uTexture, fragTexCoord);
+	// Add to actor's vector of components
+	mOwner->AddComponent(this);
+}
+
+Component::~Component()
+{
+	mOwner->RemoveComponent(this);
+}
+
+void Component::Update(float deltaTime)
+{
 }

@@ -6,20 +6,23 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-// Request GLSL 3.3
-#version 330
+#include <string>
 
-// Tex coord input from vertex shader
-in vec2 fragTexCoord;
-
-// This corresponds to the output color to the color buffer
-out vec4 outColor;
-
-// This is used for the texture sampling
-uniform sampler2D uTexture;
-
-void main()
+class Texture
 {
-	// Sample color from texture
-    outColor = texture(uTexture, fragTexCoord);
-}
+public:
+	Texture();
+	~Texture();
+	
+	bool Load(const std::string& fileName);
+	void Unload();
+	
+	void SetActive();
+	
+	int GetWidth() const { return mWidth; }
+	int GetHeight() const { return mHeight; }
+private:
+	unsigned int mTextureID;
+	int mWidth;
+	int mHeight;
+};

@@ -6,20 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-// Request GLSL 3.3
-#version 330
+#include "PlaneActor.h"
+#include "Game.h"
+#include "Renderer.h"
+#include "MeshComponent.h"
 
-// Tex coord input from vertex shader
-in vec2 fragTexCoord;
-
-// This corresponds to the output color to the color buffer
-out vec4 outColor;
-
-// This is used for the texture sampling
-uniform sampler2D uTexture;
-
-void main()
+PlaneActor::PlaneActor(Game* game)
+	:Actor(game)
 {
-	// Sample color from texture
-    outColor = texture(uTexture, fragTexCoord);
+	SetScale(10.0f);
+	MeshComponent* mc = new MeshComponent(this);
+	mc->SetMesh(GetGame()->GetRenderer()->GetMesh("Assets/Plane.gpmesh"));
 }
