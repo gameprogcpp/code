@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -16,9 +16,8 @@ class Shader
 public:
 	Shader();
 	~Shader();
-	// Load shader of the specified name, excluding
-	// the .frag/.vert extension
-	bool Load(const std::string& name);
+	// Load the vertex/fragment shaders with the given names
+	bool Load(const std::string& vertName, const std::string& fragName);
 	void Unload();
 	// Set this as the active shader program
 	void SetActive();

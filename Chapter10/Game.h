@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -35,7 +35,7 @@ public:
 	std::vector<class PlaneActor*>& GetPlanes() { return mPlanes; }
 private:
 	void ProcessInput();
-	void HandleKeyPressed(int key);
+	void HandleKeyPress(int key);
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
@@ -43,6 +43,8 @@ private:
 	
 	// All the actors in the game
 	std::vector<class Actor*> mActors;
+	// Any pending actors
+	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
 	class AudioSystem* mAudioSystem;
@@ -50,6 +52,8 @@ private:
 
 	Uint32 mTicksCount;
 	bool mIsRunning;
+	// Track if we're updating actors right now
+	bool mUpdatingActors;
 
 	// Game-specific code
 	std::vector<class PlaneActor*> mPlanes;

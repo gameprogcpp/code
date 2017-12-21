@@ -3,12 +3,12 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "SoundEvent.h"
 #include "AudioSystem.h"
-#include <FMOD/fmod_studio.hpp>
+#include <fmod_studio.hpp>
 
 SoundEvent::SoundEvent(class AudioSystem* system, unsigned int id)
 	:mSystem(system)

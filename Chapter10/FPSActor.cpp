@@ -74,7 +74,7 @@ void FPSActor::UpdateActor(float deltaTime)
 	mFPSModel->SetRotation(q);
 }
 
-void FPSActor::ProcessInput(const uint8_t* keys)
+void FPSActor::ActorInput(const uint8_t* keys)
 {
 	float forwardSpeed = 0.0f;
 	float strafeSpeed = 0.0f;

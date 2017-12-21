@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Game.h"
@@ -24,6 +24,7 @@ Game::Game()
 ,mAudioSystem(nullptr)
 ,mPhysWorld(nullptr)
 ,mIsRunning(true)
+,mUpdatingActors(false)
 {
 	
 }
@@ -38,7 +39,7 @@ bool Game::Initialize()
 
 	// Create the renderer
 	mRenderer = new Renderer(this);
-	if (!mRenderer->Initialize())
+	if (!mRenderer->Initialize(1024.0f, 768.0f))
 	{
 		SDL_Log("Failed to initialize renderer");
 		delete mRenderer;
@@ -102,11 +103,11 @@ void Game::ProcessInput()
 			case SDL_KEYDOWN:
 				if (!event.key.repeat)
 				{
-					HandleKeyPressed(event.key.keysym.sym);
+					HandleKeyPress(event.key.keysym.sym);
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				HandleKeyPressed(event.button.button);
+				HandleKeyPress(event.button.button);
 				break;
 			default:
 				break;
@@ -121,14 +122,11 @@ void Game::ProcessInput()
 
 	for (auto actor : mActors)
 	{
-		if (actor->GetState() == Actor::EActive)
-		{
-			actor->ProcessInput(state);
-		}
+		actor->ProcessInput(state);
 	}
 }
 
-void Game::HandleKeyPressed(int key)
+void Game::HandleKeyPress(int key)
 {
 	switch (key)
 	{
@@ -173,15 +171,21 @@ void Game::UpdateGame()
 	}
 	mTicksCount = SDL_GetTicks();
 
-	// Make copy of actor vector
-	// (iterate over this in case new actors are created)
-	std::vector<Actor*> copy = mActors;
-
 	// Update all actors
-	for (auto actor : copy)
+	mUpdatingActors = true;
+	for (auto actor : mActors)
 	{
 		actor->Update(deltaTime);
 	}
+	mUpdatingActors = false;
+
+	// Move any pending actors to mActors
+	for (auto pending : mPendingActors)
+	{
+		pending->ComputeWorldTransform();
+		mActors.emplace_back(pending);
+	}
+	mPendingActors.clear();
 
 	// Add any dead actors to a temp vector
 	std::vector<Actor*> deadActors;
@@ -193,8 +197,7 @@ void Game::UpdateGame()
 		}
 	}
 
-	// Delete any of the dead actors (which will
-	// remove them from mActors)
+	// Delete dead actors (which removes them from mActors)
 	for (auto actor : deadActors)
 	{
 		delete actor;
@@ -211,19 +214,6 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	mRenderer->LoadTexture("Assets/Default.png");
-	mRenderer->LoadTexture("Assets/HealthBar.png");
-	mRenderer->LoadTexture("Assets/Radar.png");
-	mRenderer->LoadTexture("Assets/Crosshair.png");
-
-	// Meshes
-	mRenderer->LoadMesh("Assets/Cube.gpmesh");
-	mRenderer->LoadMesh("Assets/Sphere.gpmesh");
-	mRenderer->LoadMesh("Assets/Plane.gpmesh");
-	mRenderer->LoadMesh("Assets/Rifle.gpmesh");
-	mRenderer->LoadMesh("Assets/Target.gpmesh");
-	//mRenderer->LoadMesh("Assets/RacingCar.gpmesh");
-
 	// Create actors
 	Actor* a = nullptr;
 	Quaternion q;
@@ -273,7 +263,6 @@ void Game::LoadData()
 	dir.mDirection = Vector3(0.0f, -0.707f, -0.707f);
 	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
-	dir.mSpecPower = 100.0f;
 
 	// UI elements
 	a = new Actor(this);
@@ -346,12 +335,30 @@ void Game::Shutdown()
 
 void Game::AddActor(Actor* actor)
 {
-	mActors.emplace_back(actor);
+	// If we're updating actors, need to add to pending
+	if (mUpdatingActors)
+	{
+		mPendingActors.emplace_back(actor);
+	}
+	else
+	{
+		mActors.emplace_back(actor);
+	}
 }
 
 void Game::RemoveActor(Actor* actor)
 {
-	auto iter = std::find(mActors.begin(), mActors.end(), actor);
+	// Is it in pending actors?
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors?
+	iter = std::find(mActors.begin(), mActors.end(), actor);
 	if (iter != mActors.end())
 	{
 		// Swap to end of vector and pop off (avoid erase copies)

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Component.h"
@@ -23,9 +23,5 @@ Component::~Component()
 }
 
 void Component::Update(float deltaTime)
-{
-}
-
-void Component::OnUpdateWorldTransform()
 {
 }

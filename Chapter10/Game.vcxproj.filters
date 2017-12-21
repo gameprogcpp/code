@@ -61,19 +61,25 @@
     <ClCompile Include="AudioComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FPSActor.cpp">
+    <ClCompile Include="CameraComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CameraComponent.cpp">
+    <ClCompile Include="FPSActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FPSCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
+    <ClCompile Include="BallActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BallMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BoxComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhysWorld.cpp">
@@ -83,12 +89,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TargetActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BallActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BallMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -141,19 +141,25 @@
     <ClInclude Include="AudioComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="FPSActor.h">
+    <ClInclude Include="CameraComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraComponent.h">
+    <ClInclude Include="FPSActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FPSCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
+    <ClInclude Include="BallActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BallMove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="BoxComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="PhysWorld.h">
@@ -163,12 +169,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TargetActor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BallActor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BallMove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
