@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -20,7 +20,10 @@ public:
 
 	void SetObjectBox(const AABB& model) { mObjectBox = model; }
 	const AABB& GetWorldBox() const { return mWorldBox; }
+
+	void SetShouldRotate(bool value) { mShouldRotate = value; }
 private:
 	AABB mObjectBox;
 	AABB mWorldBox;
+	bool mShouldRotate;
 };

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "TargetActor.h"
@@ -27,8 +27,4 @@ TargetActor::TargetActor(Game* game)
 	bc->SetObjectBox(mesh->GetBox());
 	new TargetComponent(this);
 
-}
-
-TargetActor::~TargetActor()
-{
 }

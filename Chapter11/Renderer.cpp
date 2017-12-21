@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Renderer.h"
@@ -29,8 +29,11 @@ Renderer::~Renderer()
 {
 }
 
-bool Renderer::Initialize()
+bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
+	mScreenWidth = screenWidth;
+	mScreenHeight = screenHeight;
+
 	// Set OpenGL attributes
 	// Use the core OpenGL profile
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -49,7 +52,7 @@ bool Renderer::Initialize()
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 11)", 100, 100,
-		1024, 768, SDL_WINDOW_OPENGL);
+		static_cast<int>(mScreenWidth), static_cast<int>(mScreenHeight), SDL_WINDOW_OPENGL);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -170,11 +173,22 @@ void Renderer::Draw()
 
 void Renderer::AddSprite(SpriteComponent* sprite)
 {
-	mSprites.emplace_back(sprite);
-	// Resort sprites by draw order
-	std::sort(mSprites.begin(), mSprites.end(), [](SpriteComponent* a, SpriteComponent* b) {
-		return a->GetDrawOrder() < b->GetDrawOrder();
-	});
+	// Find the insertion point in the sorted vector
+	// (The first element with a higher draw order than me)
+	int myDrawOrder = sprite->GetDrawOrder();
+	auto iter = mSprites.begin();
+	for (;
+		iter != mSprites.end();
+		++iter)
+	{
+		if (myDrawOrder < (*iter)->GetDrawOrder())
+		{
+			break;
+		}
+	}
+
+	// Inserts element before position of iterator
+	mSprites.insert(iter, sprite);
 }
 
 void Renderer::RemoveSprite(SpriteComponent* sprite)
@@ -194,21 +208,6 @@ void Renderer::RemoveMeshComp(MeshComponent* mesh)
 	mMeshComps.erase(iter);
 }
 
-Texture* Renderer::LoadTexture(const char* fileName)
-{
-	Texture* tex = new Texture();
-	if (tex->Load(fileName))
-	{
-		mTextures.emplace(fileName, tex);
-		return tex;
-	}
-	else
-	{
-		delete tex;
-		return nullptr;
-	}
-}
-
 Texture* Renderer::GetTexture(const std::string& fileName)
 {
 	Texture* tex = nullptr;
@@ -217,22 +216,20 @@ Texture* Renderer::GetTexture(const std::string& fileName)
 	{
 		tex = iter->second;
 	}
-	return tex;
-}
-
-Mesh* Renderer::LoadMesh(const char * fileName)
-{
-	Mesh* m = new Mesh();
-	if (m->Load(fileName, this))
-	{
-		mMeshes.emplace(fileName, m);
-		return m;
-	}
 	else
 	{
-		delete m;
-		return nullptr;
+		tex = new Texture();
+		if (tex->Load(fileName))
+		{
+			mTextures.emplace(fileName, tex);
+		}
+		else
+		{
+			delete tex;
+			tex = nullptr;
+		}
 	}
+	return tex;
 }
 
 Mesh* Renderer::GetMesh(const std::string & fileName)
@@ -243,6 +240,19 @@ Mesh* Renderer::GetMesh(const std::string & fileName)
 	{
 		m = iter->second;
 	}
+	else
+	{
+		m = new Mesh();
+		if (m->Load(fileName, this))
+		{
+			mMeshes.emplace(fileName, m);
+		}
+		else
+		{
+			delete m;
+			m = nullptr;
+		}
+	}
 	return m;
 }
 
@@ -250,19 +260,19 @@ bool Renderer::LoadShaders()
 {
 	// Create sprite shader
 	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders/Sprite"))
+	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
 	{
 		return false;
 	}
 
 	mSpriteShader->SetActive();
 	// Set the view-projection matrix
-	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024.f, 768.f);
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(mScreenWidth, mScreenHeight);
 	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
 
 	// Create basic mesh shader
 	mMeshShader = new Shader();
-	if (!mMeshShader->Load("Shaders/Phong"))
+	if (!mMeshShader->Load("Shaders/Phong.vert", "Shaders/Phong.frag"))
 	{
 		return false;
 	}
@@ -271,7 +281,7 @@ bool Renderer::LoadShaders()
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
 	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
-		1024.0f, 768.0f, 10.0f, 10000.0f);
+		mScreenWidth, mScreenHeight, 10.0f, 10000.0f);
 	mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
 	return true;
 }
@@ -308,8 +318,6 @@ void Renderer::SetLightUniforms(Shader* shader)
 		mDirLight.mDiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor",
 		mDirLight.mSpecColor);
-	shader->SetFloatUniform("uDirLight.mSpecPower",
-		mDirLight.mSpecPower);
 }
 
 Vector3 Renderer::Unproject(const Vector3& screenPoint) const

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "BallActor.h"
@@ -22,8 +22,8 @@ BallActor::BallActor(Game* game)
 	MeshComponent* mc = new MeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Sphere.gpmesh");
 	mc->SetMesh(mesh);
-	BallMove* move = new BallMove(this);
-	move->SetForwardSpeed(1500.0f);
+	mMyMove = new BallMove(this);
+	mMyMove->SetForwardSpeed(1500.0f);
 	mAudioComp = new AudioComponent(this);
 }
 
@@ -36,6 +36,11 @@ void BallActor::UpdateActor(float deltaTime)
 	{
 		SetState(EDead);
 	}
+}
+
+void BallActor::SetPlayer(Actor* player)
+{
+	mMyMove->SetPlayer(player);
 }
 
 void BallActor::HitTarget()
