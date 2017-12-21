@@ -1,0 +1,10 @@
+{
+	"TextMap":[
+		{ "key": "PauseTitle", "text": "PAUSED" },
+		{ "key": "ResumeButton", "text": "Resume" },
+		{ "key": "QuitButton", "text": "Quit" },
+		{ "key": "QuitText", "text": "Do you want to quit?" },
+		{ "key": "OKButton", "text": "OK" },
+		{ "key": "CancelButton", "text": "Cancel" }
+	]
+}
