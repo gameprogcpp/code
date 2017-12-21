@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #include "FPSActor.h"
-#include "PlayerMove.h"
+#include "MoveComponent.h"
 #include "SDL/SDL_scancode.h"
 #include "Renderer.h"
 #include "AudioSystem.h"
@@ -22,7 +22,7 @@
 FPSActor::FPSActor(Game* game)
 	:Actor(game)
 {
-	mMoveComp = new PlayerMove(this);
+	mMoveComp = new MoveComponent(this);
 	mAudioComp = new AudioComponent(this);
 	mLastFootstep = 0.0f;
 	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
@@ -209,8 +209,10 @@ void FPSActor::FixCollisions()
 			{
 				pos.z += dz;
 			}
+
+			// Need to set position and update box component
+			SetPosition(pos);
+			mBoxComp->OnUpdateWorldTransform();
 		}
 	}
-
-	SetPosition(pos);
 }

@@ -30,7 +30,6 @@
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="PhysWorld.cpp" />
     <ClCompile Include="PlaneActor.cpp" />
-    <ClCompile Include="PlayerMove.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SoundEvent.cpp" />
@@ -58,7 +57,6 @@
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="PhysWorld.h" />
     <ClInclude Include="PlaneActor.h" />
-    <ClInclude Include="PlayerMove.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SoundEvent.h" />

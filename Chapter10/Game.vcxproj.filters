@@ -85,9 +85,6 @@
     <ClCompile Include="PhysWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerMove.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TargetActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -163,9 +160,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="PhysWorld.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerMove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TargetActor.h">
