@@ -324,3 +324,16 @@ Vector3 Renderer::Unproject(const Vector3& screenPoint) const
 	unprojection.Invert();
 	return Vector3::TransformWithPerspDiv(deviceCoord, unprojection);
 }
+
+void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
+{
+	// Get start point (in center of screen on near plane)
+	Vector3 screenPoint(0.0f, 0.0f, 0.0f);
+	outStart = Unproject(screenPoint);
+	// Get end point (in center of screen, between near and far)
+	screenPoint.z = 0.9f;
+	Vector3 end = Unproject(screenPoint);
+	// Get direction vector
+	outDir = end - outStart;
+	outDir.Normalize();
+}

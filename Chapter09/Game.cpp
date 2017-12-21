@@ -22,6 +22,7 @@
 
 Game::Game()
 :mRenderer(nullptr)
+,mAudioSystem(nullptr)
 ,mIsRunning(true)
 ,mUpdatingActors(false)
 {

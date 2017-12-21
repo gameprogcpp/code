@@ -56,6 +56,7 @@ public:
 	// y = [-screenHeight/2, +screenHeight/2]
 	// z = [0, 1) -- 0 is closer to camera, 1 is further
 	Vector3 Unproject(const Vector3& screenPoint) const;
+	void GetScreenDirection(Vector3& outStart, Vector3& outDir) const;
 	float GetScreenWidth() const { return mScreenWidth; }
 	float GetScreenHeight() const { return mScreenHeight; }
 private:
