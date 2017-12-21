@@ -19,8 +19,6 @@ MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 
 void MoveComponent::Update(float deltaTime)
 {
-	bool moved = false;
-
 	if (!Math::NearZero(mAngularSpeed))
 	{
 		Quaternion rot = mOwner->GetRotation();
