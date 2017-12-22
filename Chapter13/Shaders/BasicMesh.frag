@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 // Request GLSL 3.3
@@ -13,7 +13,7 @@
 in vec2 fragTexCoord;
 
 // This corresponds to the output color to the color buffer
-layout(location = 0) out vec4 outColor;
+out vec4 outColor;
 
 // This is used for the texture sampling
 uniform sampler2D uTexture;

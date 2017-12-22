@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Animation.h"
 #include "Skeleton.h"
 #include <fstream>
@@ -55,8 +63,9 @@ bool Animation::Load(const std::string& fileName)
 	}
 
 	mNumFrames = frames.GetUint();
-	mLength = length.GetDouble();
+	mDuration = length.GetDouble();
 	mNumBones = bonecount.GetUint();
+	mFrameDuration = mDuration / (mNumFrames - 1);
 
 	mTracks.resize(mNumBones);
 
@@ -120,21 +129,19 @@ bool Animation::Load(const std::string& fileName)
 	return true;
 }
 
-void Animation::GetGlobalPoseAtTime(std::vector<Matrix4>& outPoses, Skeleton* inSkeleton, float inTime)
+void Animation::GetGlobalPoseAtTime(std::vector<Matrix4>& outPoses, const Skeleton* inSkeleton, float inTime) const
 {
 	if (outPoses.size() != mNumBones)
 	{
 		outPoses.resize(mNumBones);
 	}
 
-	// Duration of each frame
-	float timePerFrame = (mLength / (mNumFrames - 1));
 	// Figure out the current frame index and next frame
 	// (This assumes inTime is bounded by [0, AnimDuration]
-	size_t frame = static_cast<size_t>(inTime / timePerFrame);
+	size_t frame = static_cast<size_t>(inTime / mFrameDuration);
 	size_t nextFrame = frame + 1;
 	// Calculate fractional value between frame and next frame
-	float pct = Math::Abs(frame - inTime / timePerFrame);
+	float pct = inTime / mFrameDuration - frame;
 
 	// Setup the pose for the root
 	if (mTracks[0].size() > 0)
@@ -153,7 +160,7 @@ void Animation::GetGlobalPoseAtTime(std::vector<Matrix4>& outPoses, Skeleton* in
 	// Now setup the poses for the rest
 	for (size_t bone = 1; bone < mNumBones; bone++)
 	{
-		Matrix4 localMat;
+		Matrix4 localMat; // (Defaults to identity)
 		if (mTracks[bone].size() > 0)
 		{
 			BoneTransform interp = BoneTransform::Interpolate(mTracks[bone][frame],

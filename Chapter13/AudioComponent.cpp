@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "AudioComponent.h"
@@ -56,16 +56,14 @@ void AudioComponent::Update(float deltaTime)
 
 void AudioComponent::OnUpdateWorldTransform()
 {
-	// Update 3D events
+	// Update 3D events' world transforms
 	Matrix4 world = mOwner->GetWorldTransform();
-	auto iter = mEvents3D.begin();
-	while (iter != mEvents3D.end())
+	for (auto& event : mEvents3D)
 	{
-		if (iter->IsValid())
+		if (event.IsValid())
 		{
-			iter->Set3DAttributes(world);
+			event.Set3DAttributes(world);
 		}
-		++iter;
 	}
 }
 

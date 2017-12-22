@@ -3,11 +3,11 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "FollowActor.h"
-#include "SkeletalMesh.h"
+#include "SkeletalMeshComponent.h"
 #include "Game.h"
 #include "Renderer.h"
 #include "FollowCamera.h"
@@ -18,7 +18,7 @@ FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	,mMoving(false)
 {
-	mMeshComp = new SkeletalMesh(this);
+	mMeshComp = new SkeletalMeshComponent(this);
 	mMeshComp->SetMesh(game->GetRenderer()->GetMesh("Assets/CatWarrior.gpmesh"));
 	mMeshComp->SetSkeleton(game->GetSkeleton("Assets/CatWarrior.gpskel"));
 	mMeshComp->PlayAnimation(game->GetAnimation("Assets/CatActionIdle.gpanim"));
@@ -33,7 +33,7 @@ FollowActor::FollowActor(Game* game)
 	mirror->SnapToIdeal();
 }
 
-void FollowActor::ProcessInput(const uint8_t* keys)
+void FollowActor::ActorInput(const uint8_t* keys)
 {
 	float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;

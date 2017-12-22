@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -13,5 +13,4 @@ class TargetActor : public Actor
 {
 public:
 	TargetActor(class Game* game);
-	~TargetActor();
 };

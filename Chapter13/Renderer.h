@@ -21,8 +21,6 @@ struct DirectionalLight
 	Vector3 mDiffuseColor;
 	// Specular color
 	Vector3 mSpecColor;
-	// Specular power
-	float mSpecPower;
 };
 
 class Renderer
@@ -31,7 +29,7 @@ public:
 	Renderer(class Game* game);
 	~Renderer();
 
-	bool Initialize();
+	bool Initialize(float screenWidth, float screenHeight);
 	void Shutdown();
 	void UnloadData();
 
@@ -46,9 +44,7 @@ public:
 	void AddPointLight(class PointLightComponent* light);
 	void RemovePointLight(class PointLightComponent* light);
 
-	class Texture* LoadTexture(const char* fileName);
 	class Texture* GetTexture(const std::string& fileName);
-	class Mesh* LoadMesh(const char* fileName);
 	class Mesh* GetMesh(const std::string& fileName);
 
 	void SetViewMatrix(const Matrix4& view) { mView = view; }
@@ -95,7 +91,7 @@ private:
 
 	// All (non-skeletal) mesh components drawn
 	std::vector<class MeshComponent*> mMeshComps;
-	std::vector<class SkeletalMesh*> mSkeletalMeshes;
+	std::vector<class SkeletalMeshComponent*> mSkeletalMeshes;
 
 	// Game
 	class Game* mGame;

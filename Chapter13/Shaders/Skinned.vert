@@ -36,7 +36,7 @@ void main()
 	// Convert position to homogeneous coordinates
 	vec4 pos = vec4(inPosition, 1.0);
 	
-	// Apply the skinning
+	// Skin the position
 	vec4 skinnedPos = (pos * uMatrixPalette[inSkinBones.x]) * inSkinWeights.x;
 	skinnedPos += (pos * uMatrixPalette[inSkinBones.y]) * inSkinWeights.y;
 	skinnedPos += (pos * uMatrixPalette[inSkinBones.z]) * inSkinWeights.z;
@@ -57,7 +57,6 @@ void main()
 		+ (skinnedNormal * uMatrixPalette[inSkinBones.w]) * inSkinWeights.w;
 	// Transform normal into world space (w = 0)
 	fragNormal = (skinnedNormal * uWorldTransform).xyz;
-
 
 	// Pass along the texture coordinate to frag shader
 	fragTexCoord = inTexCoord;

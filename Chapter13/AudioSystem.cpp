@@ -3,13 +3,13 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "AudioSystem.h"
 #include <SDL/SDL_log.h>
-#include <FMOD/fmod_studio.hpp>
-#include <FMOD/fmod_errors.h>
+#include <fmod_studio.hpp>
+#include <fmod_errors.h>
 #include <vector>
 
 unsigned int AudioSystem::sNextID = 0;
@@ -92,6 +92,7 @@ void AudioSystem::LoadBank(const std::string& name)
 		&bank // Save pointer to bank
 	);
 
+	const int maxPathLength = 512;
 	if (result == FMOD_OK)
 	{
 		// Add bank to map
@@ -106,12 +107,12 @@ void AudioSystem::LoadBank(const std::string& name)
 			// Get list of event descriptions in this bank
 			std::vector<FMOD::Studio::EventDescription*> events(numEvents);
 			bank->getEventList(events.data(), numEvents, &numEvents);
-			char eventName[512];
+			char eventName[maxPathLength];
 			for (int i = 0; i < numEvents; i++)
 			{
 				FMOD::Studio::EventDescription* e = events[i];
 				// Get the path of this event (like event:/Explosion2D)
-				e->getPath(eventName, 512, nullptr);
+				e->getPath(eventName, maxPathLength, nullptr);
 				// Add to event map
 				mEvents.emplace(eventName, e);
 			}

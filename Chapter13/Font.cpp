@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Font.h"
@@ -75,7 +75,7 @@ Texture* Font::RenderText(const std::string& textKey,
 	if (iter != mFontData.end())
 	{
 		TTF_Font* font = iter->second;
-		std::string actualText = mGame->GetText(textKey);
+		const std::string& actualText = mGame->GetText(textKey);
 		// Draw this to a surface (blended for alpha)
 		SDL_Surface* surf = TTF_RenderUTF8_Blended(font, actualText.c_str(), sdlColor);
 		if (surf != nullptr)

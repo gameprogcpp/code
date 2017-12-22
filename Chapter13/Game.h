@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -52,11 +52,13 @@ public:
 	void LoadText(const std::string& fileName);
 	const std::string& GetText(const std::string& key);
 
-	void LoadSkeleton(const std::string& fileName);
 	class Skeleton* GetSkeleton(const std::string& fileName);
 
-	void LoadAnimation(const std::string& fileName);
 	class Animation* GetAnimation(const std::string& fileName);
+	// Game-specific
+	void AddPlane(class PlaneActor* plane);
+	void RemovePlane(class PlaneActor* plane);
+	std::vector<class PlaneActor*>& GetPlanes() { return mPlanes; }
 private:
 	void ProcessInput();
 	void HandleKeyPress(int key);
@@ -77,6 +79,8 @@ private:
 
 	// Map for text localization
 	std::unordered_map<std::string, std::string> mText;
+	// Any pending actors
+	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
 	class AudioSystem* mAudioSystem;
@@ -85,9 +89,12 @@ private:
 
 	Uint32 mTicksCount;
 	GameState mGameState;
+	// Track if we're updating actors right now
+	bool mUpdatingActors;
 
 	// Game-specific code
 	class FollowActor* mFollowActor;
+	std::vector<class PlaneActor*> mPlanes;
 	class SpriteComponent* mCrosshair;
 	SoundEvent mMusicEvent;
 };

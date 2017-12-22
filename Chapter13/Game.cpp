@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Game.h"
@@ -35,6 +35,7 @@ Game::Game()
 ,mAudioSystem(nullptr)
 ,mPhysWorld(nullptr)
 ,mGameState(EGameplay)
+,mUpdatingActors(false)
 {
 	
 }
@@ -49,7 +50,7 @@ bool Game::Initialize()
 
 	// Create the renderer
 	mRenderer = new Renderer(this);
-	if (!mRenderer->Initialize())
+	if (!mRenderer->Initialize(1024.0f, 768.0f))
 	{
 		SDL_Log("Failed to initialize renderer");
 		delete mRenderer;
@@ -95,6 +96,17 @@ void Game::RunLoop()
 	}
 }
 
+void Game::AddPlane(PlaneActor* plane)
+{
+	mPlanes.emplace_back(plane);
+}
+
+void Game::RemovePlane(PlaneActor* plane)
+{
+	auto iter = std::find(mPlanes.begin(), mPlanes.end(), plane);
+	mPlanes.erase(iter);
+}
+
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -113,7 +125,7 @@ void Game::ProcessInput()
 					{
 						HandleKeyPress(event.key.keysym.sym);
 					}
-					else
+					else if (!mUIStack.empty())
 					{
 						mUIStack.back()->
 							HandleKeyPress(event.key.keysym.sym);
@@ -125,7 +137,7 @@ void Game::ProcessInput()
 				{
 					HandleKeyPress(event.button.button);
 				}
-				else
+				else if (!mUIStack.empty())
 				{
 					mUIStack.back()->
 						HandleKeyPress(event.button.button);
@@ -147,7 +159,7 @@ void Game::ProcessInput()
 			}
 		}
 	}
-	else
+	else if (!mUIStack.empty())
 	{
 		mUIStack.back()->ProcessInput(state);
 	}
@@ -214,15 +226,21 @@ void Game::UpdateGame()
 
 	if (mGameState == EGameplay)
 	{
-		// Make copy of actor vector
-		// (iterate over this in case new actors are created)
-		std::vector<Actor*> copy = mActors;
-
 		// Update all actors
-		for (auto actor : copy)
+		mUpdatingActors = true;
+		for (auto actor : mActors)
 		{
 			actor->Update(deltaTime);
 		}
+		mUpdatingActors = false;
+
+		// Move any pending actors to mActors
+		for (auto pending : mPendingActors)
+		{
+			pending->ComputeWorldTransform();
+			mActors.emplace_back(pending);
+		}
+		mPendingActors.clear();
 
 		// Add any dead actors to a temp vector
 		std::vector<Actor*> deadActors;
@@ -234,14 +252,13 @@ void Game::UpdateGame()
 			}
 		}
 
-		// Delete any of the dead actors (which will
-		// remove them from mActors)
+		// Delete dead actors (which removes them from mActors)
 		for (auto actor : deadActors)
 		{
 			delete actor;
 		}
 	}
-	
+
 	// Update audio system
 	mAudioSystem->Update(deltaTime);
 	
@@ -276,32 +293,9 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	mRenderer->LoadTexture("Assets/Default.png");
-	mRenderer->LoadTexture("Assets/HealthBar.png");
-	mRenderer->LoadTexture("Assets/Radar.png");
-	mRenderer->LoadTexture("Assets/Crosshair.png");
-	mRenderer->LoadTexture("Assets/CrosshairRed.png");
-	mRenderer->LoadTexture("Assets/Blip.png");
-	mRenderer->LoadTexture("Assets/RadarArrow.png");
-	mRenderer->LoadTexture("Assets/ButtonBlue.png");
-	mRenderer->LoadTexture("Assets/ButtonYellow.png");
-	mRenderer->LoadTexture("Assets/DialogBG.png");
-
-	// Meshes
-	mRenderer->LoadMesh("Assets/Cube.gpmesh");
-	mRenderer->LoadMesh("Assets/Sphere.gpmesh");
-	mRenderer->LoadMesh("Assets/Plane.gpmesh");
-	mRenderer->LoadMesh("Assets/Target.gpmesh");
-	mRenderer->LoadMesh("Assets/CatWarrior.gpmesh");
-	
 	LoadFont("Assets/Carlito-Regular.ttf");
-	// Load englisth text
+	// Load English text
 	LoadText("Assets/English.gptext");
-
-	// Skeleton/animations
-	LoadSkeleton("Assets/CatWarrior.gpskel");
-	LoadAnimation("Assets/CatActionIdle.gpanim");
-	LoadAnimation("Assets/CatRunSprint.gpanim");
 
 	// Create actors
 	Actor* a = nullptr;
@@ -380,7 +374,6 @@ void Game::LoadData()
 	dir.mDirection = Vector3(0.0f, -0.707f, -0.707f);
 	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
-	dir.mSpecPower = 100.0f;
 
 	// UI elements
 	mHUD = new HUD(this);
@@ -473,12 +466,30 @@ void Game::Shutdown()
 
 void Game::AddActor(Actor* actor)
 {
-	mActors.emplace_back(actor);
+	// If we're updating actors, need to add to pending
+	if (mUpdatingActors)
+	{
+		mPendingActors.emplace_back(actor);
+	}
+	else
+	{
+		mActors.emplace_back(actor);
+	}
 }
 
 void Game::RemoveActor(Actor* actor)
 {
-	auto iter = std::find(mActors.begin(), mActors.end(), actor);
+	// Is it in pending actors?
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors?
+	iter = std::find(mActors.begin(), mActors.end(), actor);
 	if (iter != mActors.end())
 	{
 		// Swap to end of vector and pop off (avoid erase copies)
@@ -545,17 +556,13 @@ void Game::LoadText(const std::string& fileName)
 	}
 	// Parse the text map
 	const rapidjson::Value& actions = doc["TextMap"];
-	if (actions.IsArray())
+	for (rapidjson::Value::ConstMemberIterator itr = actions.MemberBegin();
+		itr != actions.MemberEnd(); ++itr)
 	{
-		for (rapidjson::SizeType i = 0; i < actions.Size(); i++)
+		if (itr->name.IsString() && itr->value.IsString())
 		{
-			const rapidjson::Value& key = actions[i]["key"];
-			const rapidjson::Value& text = actions[i]["text"];
-
-			if (key.IsString() && text.IsString())
-			{
-				mText.emplace(key.GetString(), text.GetString());
-			}
+			mText.emplace(itr->name.GetString(), 
+				itr->value.GetString());
 		}
 	}
 }
@@ -575,19 +582,6 @@ const std::string& Game::GetText(const std::string& key)
 	}
 }
 
-void Game::LoadSkeleton(const std::string& fileName)
-{
-	Skeleton* sk = new Skeleton();
-	if (sk->Load(fileName))
-	{
-		mSkeletons.emplace(fileName, sk);
-	}
-	else
-	{
-		delete sk;
-	}
-}
-
 Skeleton* Game::GetSkeleton(const std::string& fileName)
 {
 	auto iter = mSkeletons.find(fileName);
@@ -597,20 +591,17 @@ Skeleton* Game::GetSkeleton(const std::string& fileName)
 	}
 	else
 	{
-		return nullptr;
-	}
-}
-
-void Game::LoadAnimation(const std::string& fileName)
-{
-	Animation* anim = new Animation();
-	if (anim->Load(fileName))
-	{
-		mAnims.emplace(fileName, anim);
-	}
-	else
-	{
-		delete anim;
+		Skeleton* sk = new Skeleton();
+		if (sk->Load(fileName))
+		{
+			mSkeletons.emplace(fileName, sk);
+		}
+		else
+		{
+			delete sk;
+			sk = nullptr;
+		}
+		return sk;
 	}
 }
 
@@ -623,6 +614,16 @@ Animation* Game::GetAnimation(const std::string& fileName)
 	}
 	else
 	{
-		return nullptr;
+		Animation* anim = new Animation();
+		if (anim->Load(fileName))
+		{
+			mAnims.emplace(fileName, anim);
+		}
+		else
+		{
+			delete anim;
+			anim = nullptr;
+		}
+		return anim;
 	}
 }

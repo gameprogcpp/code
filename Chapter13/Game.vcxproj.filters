@@ -64,25 +64,25 @@
     <ClCompile Include="CameraComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
+    <ClCompile Include="BallActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BallMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BoxComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysWorld.cpp">
+    <ClCompile Include="Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerMove.cpp">
+    <ClCompile Include="PhysWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TargetActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BallActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BallMove.cpp">
+    <ClCompile Include="DialogBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
@@ -94,10 +94,16 @@
     <ClCompile Include="PauseMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TargetComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="UIScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DialogBox.cpp">
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoneTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FollowActor.cpp">
@@ -106,22 +112,16 @@
     <ClCompile Include="FollowCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkeletalMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BoneTransform.cpp">
+    <ClCompile Include="SkeletalMeshComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Skeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
+    <ClCompile Include="GBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MirrorCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PointLightComponent.cpp">
@@ -180,25 +180,25 @@
     <ClInclude Include="CameraComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
+    <ClInclude Include="BallActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BallMove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="BoxComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysWorld.h">
+    <ClInclude Include="Collision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerMove.h">
+    <ClInclude Include="PhysWorld.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TargetActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="BallActor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BallMove.h">
+    <ClInclude Include="DialogBox.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
@@ -210,10 +210,16 @@
     <ClInclude Include="PauseMenu.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="TargetComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="UIScreen.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="DialogBox.h">
+    <ClInclude Include="Animation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoneTransform.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FollowActor.h">
@@ -222,25 +228,19 @@
     <ClInclude Include="FollowCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkeletalMesh.h">
+    <ClInclude Include="MatrixPalette.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="BoneTransform.h">
+    <ClInclude Include="SkeletalMeshComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Skeleton.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MatrixPalette.h">
+    <ClInclude Include="GBuffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MirrorCamera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GBuffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="PointLightComponent.h">
@@ -266,19 +266,19 @@
     <None Include="Shaders\Phong.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\Skinned.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\GBufferGlobal.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\GBufferGlobal.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\GBufferPointLight.frag">
+      <Filter>Shaders</Filter>
+    </None>
     <None Include="Shaders\GBufferWrite.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\GBufferPointLight.frag">
+    <None Include="Shaders\Skinned.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

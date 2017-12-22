@@ -17,7 +17,7 @@
 #include "UIScreen.h"
 #include "Game.h"
 #include <GL/glew.h>
-#include "SkeletalMesh.h"
+#include "SkeletalMeshComponent.h"
 #include "GBuffer.h"
 #include "PointLightComponent.h"
 
@@ -38,10 +38,10 @@ Renderer::~Renderer()
 {
 }
 
-bool Renderer::Initialize()
+bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
-	mScreenWidth = 1024.0f;
-	mScreenHeight = 768.0f;
+	mScreenWidth = screenWidth;
+	mScreenHeight = screenHeight;
 
 	// Set OpenGL attributes
 	// Use the core OpenGL profile
@@ -111,7 +111,7 @@ bool Renderer::Initialize()
 	}
 
 	// Load point light mesh
-	mPointLightMesh = LoadMesh("Assets/PointLight.gpmesh");
+	mPointLightMesh = GetMesh("Assets/PointLight.gpmesh");
 
 	return true;
 }
@@ -223,7 +223,7 @@ void Renderer::AddMeshComp(MeshComponent* mesh)
 {
 	if (mesh->GetIsSkeletal())
 	{
-		SkeletalMesh* sk = static_cast<SkeletalMesh*>(mesh);
+		SkeletalMeshComponent* sk = static_cast<SkeletalMeshComponent*>(mesh);
 		mSkeletalMeshes.emplace_back(sk);
 	}
 	else
@@ -236,7 +236,7 @@ void Renderer::RemoveMeshComp(MeshComponent* mesh)
 {
 	if (mesh->GetIsSkeletal())
 	{
-		SkeletalMesh* sk = static_cast<SkeletalMesh*>(mesh);
+		SkeletalMeshComponent* sk = static_cast<SkeletalMeshComponent*>(mesh);
 		auto iter = std::find(mSkeletalMeshes.begin(), mSkeletalMeshes.end(), sk);
 		mSkeletalMeshes.erase(iter);
 	}
@@ -258,21 +258,6 @@ void Renderer::RemovePointLight(PointLightComponent* light)
 	mPointLights.erase(iter);
 }
 
-Texture* Renderer::LoadTexture(const char* fileName)
-{
-	Texture* tex = new Texture();
-	if (tex->Load(fileName))
-	{
-		mTextures.emplace(fileName, tex);
-		return tex;
-	}
-	else
-	{
-		delete tex;
-		return nullptr;
-	}
-}
-
 Texture* Renderer::GetTexture(const std::string& fileName)
 {
 	Texture* tex = nullptr;
@@ -281,22 +266,20 @@ Texture* Renderer::GetTexture(const std::string& fileName)
 	{
 		tex = iter->second;
 	}
-	return tex;
-}
-
-Mesh* Renderer::LoadMesh(const char * fileName)
-{
-	Mesh* m = new Mesh();
-	if (m->Load(fileName, this))
-	{
-		mMeshes.emplace(fileName, m);
-		return m;
-	}
 	else
 	{
-		delete m;
-		return nullptr;
+		tex = new Texture();
+		if (tex->Load(fileName))
+		{
+			mTextures.emplace(fileName, tex);
+		}
+		else
+		{
+			delete tex;
+			tex = nullptr;
+		}
 	}
+	return tex;
 }
 
 Mesh* Renderer::GetMesh(const std::string & fileName)
@@ -306,6 +289,19 @@ Mesh* Renderer::GetMesh(const std::string & fileName)
 	if (iter != mMeshes.end())
 	{
 		m = iter->second;
+	}
+	else
+	{
+		m = new Mesh();
+		if (m->Load(fileName, this))
+		{
+			mMeshes.emplace(fileName, m);
+		}
+		else
+		{
+			delete m;
+			m = nullptr;
+		}
 	}
 	return m;
 }
@@ -559,8 +555,6 @@ void Renderer::SetLightUniforms(Shader* shader, const Matrix4& view)
 		mDirLight.mDiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor",
 		mDirLight.mSpecColor);
-	shader->SetFloatUniform("uDirLight.mSpecPower",
-		mDirLight.mSpecPower);
 }
 
 Vector3 Renderer::Unproject(const Vector3& screenPoint) const

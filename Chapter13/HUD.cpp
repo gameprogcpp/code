@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "HUD.h"
@@ -12,10 +12,10 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "PhysWorld.h"
-#include "TargetActor.h"
 #include "FollowActor.h"
 #include <algorithm>
 #include "GBuffer.h"
+#include "TargetComponent.h"
 
 HUD::HUD(Game* game)
 	:UIScreen(game)
@@ -70,21 +70,16 @@ void HUD::Draw(Shader* shader)
 	//DrawTexture(shader, tex, Vector2::Zero, 1.0f, true);
 }
 
-void HUD::AddBlipActor(Actor* actor)
+void HUD::AddTargetComponent(TargetComponent* tc)
 {
-	mBlipActors.emplace_back(actor);
+	mTargetComps.emplace_back(tc);
 }
 
-void HUD::RemoveBlipActor(Actor* actor)
+void HUD::RemoveTargetComponent(TargetComponent* tc)
 {
-	auto iter = std::find(mBlipActors.begin(), mBlipActors.end(),
-						  actor);
-	if (iter != mBlipActors.end())
-	{
-		// Swap to end of vector and pop off (avoid erase copies)
-		std::iter_swap(iter, mBlipActors.end() - 1);
-		mBlipActors.pop_back();
-	}
+	auto iter = std::find(mTargetComps.begin(), mTargetComps.end(),
+		tc);
+	mTargetComps.erase(iter);
 }
 
 void HUD::UpdateCrosshair(float deltaTime)
@@ -101,9 +96,13 @@ void HUD::UpdateCrosshair(float deltaTime)
 	if (mGame->GetPhysWorld()->SegmentCast(l, info))
 	{
 		// Is this a target?
-		if (dynamic_cast<TargetActor*>(info.mActor) != nullptr)
+		for (auto tc : mTargetComps)
 		{
-			mTargetEnemy = true;
+			if (tc->GetOwner() == info.mActor)
+			{
+				mTargetEnemy = true;
+				break;
+			}
 		}
 	}
 }
@@ -112,32 +111,36 @@ void HUD::UpdateRadar(float deltaTime)
 {
 	// Clear blip positions from last frame
 	mBlips.clear();
+	
 	// Convert player position to radar coordinates (x forward, z up)
 	Vector3 playerPos = mGame->GetPlayer()->GetPosition();
 	Vector2 playerPos2D(playerPos.y, playerPos.x);
 	// Ditto for player forward
 	Vector3 playerForward = mGame->GetPlayer()->GetForward();
 	Vector2 playerForward2D(playerForward.x, playerForward.y);
+	
 	// Use atan2 to get rotation of radar
 	float angle = Math::Atan2(playerForward2D.y, playerForward2D.x);
 	// Make a 2D rotation matrix
 	Matrix3 rotMat = Matrix3::CreateRotation(angle);
 	
 	// Get positions of blips
-	for (auto actor : mBlipActors)
+	for (auto tc : mTargetComps)
 	{
-		Vector3 actorPos = actor->GetPosition();
-		Vector2 actorPos2D(actorPos.y, actorPos.x);
-		// Calculate vector between player and actor
-		Vector2 playerToActor = actorPos2D - playerPos2D;
+		Vector3 targetPos = tc->GetOwner()->GetPosition();
+		Vector2 actorPos2D(targetPos.y, targetPos.x);
+		
+		// Calculate vector between player and target
+		Vector2 playerToTarget = actorPos2D - playerPos2D;
+		
 		// See if within range
-		if (playerToActor.LengthSq() <= (mRadarRange * mRadarRange))
+		if (playerToTarget.LengthSq() <= (mRadarRange * mRadarRange))
 		{
-			// Convert playerToActor into an offset from
+			// Convert playerToTarget into an offset from
 			// the center of the on-screen radar
-			Vector2 blipPos = playerToActor;
-			blipPos *= 1.0f/mRadarRange;
-			blipPos *= mRadarRadius;
+			Vector2 blipPos = playerToTarget;
+			blipPos *= mRadarRadius/mRadarRange;
+			
 			// Rotate blipPos
 			blipPos = Vector2::Transform(blipPos, rotMat);
 			mBlips.emplace_back(blipPos);

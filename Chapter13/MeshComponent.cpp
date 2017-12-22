@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "MeshComponent.h"
@@ -37,6 +37,8 @@ void MeshComponent::Draw(Shader* shader)
 		// Set the world transform
 		shader->SetMatrixUniform("uWorldTransform", 
 			mOwner->GetWorldTransform());
+		// Set specular power
+		shader->SetFloatUniform("uSpecPower", mMesh->GetSpecPower());
 		// Set the active texture
 		Texture* t = mMesh->GetTexture(mTextureIndex);
 		if (t)

@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "MoveComponent.h"
@@ -19,8 +19,6 @@ MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 
 void MoveComponent::Update(float deltaTime)
 {
-	bool moved = false;
-
 	if (!Math::NearZero(mAngularSpeed))
 	{
 		Quaternion rot = mOwner->GetRotation();
@@ -31,7 +29,6 @@ void MoveComponent::Update(float deltaTime)
 		// Concatenate old and new quaternion
 		rot = Quaternion::Concatenate(rot, inc);
 		mOwner->SetRotation(rot);
-		moved = true;
 	}
 	
 	if (!Math::NearZero(mForwardSpeed) || !Math::NearZero(mStrafeSpeed))
@@ -40,12 +37,6 @@ void MoveComponent::Update(float deltaTime)
 		pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
 		pos += mOwner->GetRight() * mStrafeSpeed * deltaTime;
 		mOwner->SetPosition(pos);
-		moved = true;
 	}
 
-	// Update world transform if needed
-	if (moved)
-	{
-		mOwner->ComputeWorldTransform();
-	}
 }

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 // MinDistSq between two line segments:
 // Copyright 2001 softSurfer, 2012 Dan Sunday
@@ -16,6 +16,7 @@
 
 #include "Collision.h"
 #include <algorithm>
+#include <array>
 
 LineSegment::LineSegment(const Vector3& start, const Vector3& end)
 	:mStart(start)
@@ -185,19 +186,19 @@ void AABB::UpdateMinMax(const Vector3& point)
 void AABB::Rotate(const Quaternion& q)
 {
 	// Construct the 8 points for the corners of the box
-	std::vector<Vector3> points;
+	std::array<Vector3, 8> points;
 	// Min point is always a corner
-	points.emplace_back(mMin);
+	points[0] = mMin;
 	// Permutations with 2 min and 1 max
-	points.emplace_back(mMax.x, mMin.y, mMin.z);
-	points.emplace_back(mMin.x, mMax.y, mMin.z);
-	points.emplace_back(mMin.x, mMin.y, mMax.z);
+	points[1] = Vector3(mMax.x, mMin.y, mMin.z);
+	points[2] = Vector3(mMin.x, mMax.y, mMin.z);
+	points[3] = Vector3(mMin.x, mMin.y, mMax.z);
 	// Permutations with 2 max and 1 min
-	points.emplace_back(mMin.x, mMax.y, mMax.z);
-	points.emplace_back(mMax.x, mMin.y, mMax.z);
-	points.emplace_back(mMax.x, mMax.y, mMin.z);
+	points[4] = Vector3(mMin.x, mMax.y, mMax.z);
+	points[5] = Vector3(mMax.x, mMin.y, mMax.z);
+	points[6] = Vector3(mMax.x, mMax.y, mMin.z);
 	// Max point corner
-	points.emplace_back(mMax);
+	points[7] = Vector3(mMax);
 
 	// Rotate first point
 	Vector3 p = Vector3::Transform(points[0], q);
@@ -205,7 +206,7 @@ void AABB::Rotate(const Quaternion& q)
 	mMin = p;
 	mMax = p;
 	// Update min/max based on remaining points, rotated
-	for (size_t i = 0; i < points.size(); i++)
+	for (size_t i = 1; i < points.size(); i++)
 	{
 		p = Vector3::Transform(points[i], q);
 		UpdateMinMax(p);
@@ -322,13 +323,14 @@ bool Intersect(const LineSegment& l, const Sphere& s, float& outT)
 	float b = 2.0f * Vector3::Dot(X, Y);
 	float c = Vector3::Dot(X, X) - s.mRadius * s.mRadius;
 	// Compute discriminant
-	float disc = Math::Sqrt(b * b - 4.0f * a * c);
+	float disc = b * b - 4.0f * a * c;
 	if (disc < 0.0f)
 	{
 		return false;
 	}
 	else
 	{
+		disc = Math::Sqrt(disc);
 		// Compute min and max solutions of t
 		float tMin = (-b - disc) / (2.0f * a);
 		float tMax = (-b + disc) / (2.0f * a);
@@ -357,7 +359,17 @@ bool Intersect(const LineSegment& l, const Plane& p, float& outT)
 		p.mNormal);
 	if (Math::NearZero(denom))
 	{
-		return false;
+		// The only way they intersect is if start
+		// is a point on the plane (P dot N) == d
+		if (Math::NearZero(Vector3::Dot(l.mStart, p.mNormal) 
+			- p.mD))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
@@ -464,6 +476,7 @@ bool SweptSphere(const Sphere& P0, const Sphere& P1,
 	}
 	else
 	{
+		disc = Math::Sqrt(disc);
 		// We only care about the smaller solution
 		outT = (-b - disc) / (2.0f * a);
 		if (outT >= 0.0f && outT <= 0.0f)

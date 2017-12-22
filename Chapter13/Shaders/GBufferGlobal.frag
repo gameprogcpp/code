@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 // Request GLSL 3.3
@@ -30,8 +30,6 @@ struct DirectionalLight
 	vec3 mDiffuseColor;
 	// Specular color
 	vec3 mSpecColor;
-	// Specular power
-	float mSpecPower;
 };
 
 // Uniforms for lighting
