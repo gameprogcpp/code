@@ -38,10 +38,10 @@ Renderer::~Renderer()
 {
 }
 
-bool Renderer::Initialize()
+bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
-	mScreenWidth = 1024.0f;
-	mScreenHeight = 768.0f;
+	mScreenWidth = screenWidth;
+	mScreenHeight = screenHeight;
 
 	// Set OpenGL attributes
 	// Use the core OpenGL profile
@@ -550,8 +550,6 @@ void Renderer::SetLightUniforms(Shader* shader, const Matrix4& view)
 		mDirLight.mDiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor",
 		mDirLight.mSpecColor);
-	shader->SetFloatUniform("uDirLight.mSpecPower",
-		mDirLight.mSpecPower);
 }
 
 Vector3 Renderer::Unproject(const Vector3& screenPoint) const

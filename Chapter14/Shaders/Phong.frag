@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 // Request GLSL 3.3
@@ -18,7 +18,7 @@ in vec3 fragNormal;
 in vec3 fragWorldPos;
 
 // This corresponds to the output color to the color buffer
-layout(location = 0) out vec4 outColor;
+out vec4 outColor;
 
 // This is used for the texture sampling
 uniform sampler2D uTexture;
@@ -32,15 +32,16 @@ struct DirectionalLight
 	vec3 mDiffuseColor;
 	// Specular color
 	vec3 mSpecColor;
-	// Specular power
-	float mSpecPower;
 };
 
 // Uniforms for lighting
 // Camera position (in world space)
 uniform vec3 uCameraPos;
+// Specular power for this surface
+uniform float uSpecPower;
 // Ambient light level
 uniform vec3 uAmbientLight;
+
 // Directional Light
 uniform DirectionalLight uDirLight;
 
@@ -60,12 +61,10 @@ void main()
 	float NdotL = dot(N, L);
 	if (NdotL > 0)
 	{
-		vec3 Diffuse = uDirLight.mDiffuseColor * dot(N, L);
-		vec3 Specular = uDirLight.mSpecColor * pow(max(0.0, dot(R, V)), uDirLight.mSpecPower);
+		vec3 Diffuse = uDirLight.mDiffuseColor * NdotL;
+		vec3 Specular = uDirLight.mSpecColor * pow(max(0.0, dot(R, V)), uSpecPower);
 		Phong += Diffuse + Specular;
 	}
-	// Clamp light between 0-1 RGB values
-	Phong = clamp(Phong, 0.0, 1.0);
 
 	// Final color is texture color times phong light (alpha = 1)
     outColor = texture(uTexture, fragTexCoord) * vec4(Phong, 1.0f);

@@ -23,11 +23,11 @@ public:
 		TFollowCamera,
 		TMeshComponent,
 		TMoveComponent,
-		TPlayerMove,
 		TSkeletalMeshComponent,
 		TSpriteComponent,
 		TMirrorCamera,
 		TPointLightComponent,
+		TTargetComponent,
 
 		NUM_COMPONENT_TYPES
 	};

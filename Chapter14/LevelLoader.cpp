@@ -25,11 +25,11 @@
 #include "FollowCamera.h"
 #include "MeshComponent.h"
 #include "MoveComponent.h"
-#include "PlayerMove.h"
 #include "SkeletalMeshComponent.h"
 #include "SpriteComponent.h"
 #include "MirrorCamera.h"
 #include "PointLightComponent.h"
+#include "TargetComponent.h"
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/prettywriter.h>
 
@@ -54,11 +54,11 @@ std::unordered_map<std::string, std::pair<int, ComponentFunc>> LevelLoader::sCom
 	{ "FollowCamera", { Component::TFollowCamera, &Component::Create<FollowCamera> } },
 	{ "MeshComponent", { Component::TMeshComponent, &Component::Create<MeshComponent> } },
 	{ "MoveComponent", { Component::TMoveComponent, &Component::Create<MoveComponent> } },
-	{ "PlayerMove", { Component::TPlayerMove, &Component::Create<PlayerMove> } },
 	{ "SkeletalMeshComponent", { Component::TSkeletalMeshComponent, &Component::Create<SkeletalMeshComponent> } },
 	{ "SpriteComponent", { Component::TSpriteComponent, &Component::Create<SpriteComponent> } },
 	{ "MirrorCamera", { Component::TMirrorCamera, &Component::Create<MirrorCamera> } },
 	{ "PointLightComponent", { Component::TPointLightComponent, &Component::Create<PointLightComponent> }},
+	{ "TargetComponent",{ Component::TTargetComponent, &Component::Create<TargetComponent> } },
 };
 
 bool LevelLoader::LoadLevel(Game* game, const std::string& fileName)

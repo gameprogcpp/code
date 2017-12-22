@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -20,8 +20,8 @@ public:
 	void Update(float deltaTime) override;
 	void Draw(class Shader* shader) override;
 	
-	void AddBlipActor(class Actor* actor);
-	void RemoveBlipActor(class Actor* actor);
+	void AddTargetComponent(class TargetComponent* tc);
+	void RemoveTargetComponent(class TargetComponent* tc);
 protected:
 	void UpdateCrosshair(float deltaTime);
 	void UpdateRadar(float deltaTime);
@@ -33,8 +33,8 @@ protected:
 	class Texture* mBlipTex;
 	class Texture* mRadarArrow;
 	
-	// Actors that should appear on radar
-	std::vector<class Actor*> mBlipActors;
+	// All the target components in the game
+	std::vector<class TargetComponent*> mTargetComps;
 	// 2D offsets of blips relative to radar
 	std::vector<Vector2> mBlips;
 	// Adjust range of radar and radius

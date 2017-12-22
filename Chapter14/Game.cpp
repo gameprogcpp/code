@@ -48,7 +48,7 @@ bool Game::Initialize()
 
 	// Create the renderer
 	mRenderer = new Renderer(this);
-	if (!mRenderer->Initialize())
+	if (!mRenderer->Initialize(1024.0f, 768.0f))
 	{
 		SDL_Log("Failed to initialize renderer");
 		delete mRenderer;
@@ -112,7 +112,7 @@ void Game::ProcessInput()
 					{
 						HandleKeyPress(event.key.keysym.sym);
 					}
-					else
+					else if (!mUIStack.empty())
 					{
 						mUIStack.back()->
 							HandleKeyPress(event.key.keysym.sym);
@@ -124,7 +124,7 @@ void Game::ProcessInput()
 				{
 					HandleKeyPress(event.button.button);
 				}
-				else
+				else if (!mUIStack.empty())
 				{
 					mUIStack.back()->
 						HandleKeyPress(event.button.button);
@@ -146,7 +146,7 @@ void Game::ProcessInput()
 			}
 		}
 	}
-	else
+	else if (!mUIStack.empty())
 	{
 		mUIStack.back()->ProcessInput(state);
 	}
@@ -414,17 +414,13 @@ void Game::LoadText(const std::string& fileName)
 
 	// Parse the text map
 	const rapidjson::Value& actions = doc["TextMap"];
-	if (actions.IsArray())
+	for (rapidjson::Value::ConstMemberIterator itr = actions.MemberBegin();
+		itr != actions.MemberEnd(); ++itr)
 	{
-		for (rapidjson::SizeType i = 0; i < actions.Size(); i++)
+		if (itr->name.IsString() && itr->value.IsString())
 		{
-			const rapidjson::Value& key = actions[i]["key"];
-			const rapidjson::Value& text = actions[i]["text"];
-
-			if (key.IsString() && text.IsString())
-			{
-				mText.emplace(key.GetString(), text.GetString());
-			}
+			mText.emplace(itr->name.GetString(),
+				itr->value.GetString());
 		}
 	}
 }

@@ -21,8 +21,6 @@ struct DirectionalLight
 	Vector3 mDiffuseColor;
 	// Specular color
 	Vector3 mSpecColor;
-	// Specular power
-	float mSpecPower = 0.0f;
 };
 
 class Renderer
@@ -31,7 +29,7 @@ public:
 	Renderer(class Game* game);
 	~Renderer();
 
-	bool Initialize();
+	bool Initialize(float screenWidth, float screenHeight);
 	void Shutdown();
 	void UnloadData();
 

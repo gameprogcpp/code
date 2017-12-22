@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "TargetActor.h"
@@ -12,7 +12,7 @@
 #include "MeshComponent.h"
 #include "BoxComponent.h"
 #include "Mesh.h"
-#include "HUD.h"
+#include "TargetComponent.h"
 
 TargetActor::TargetActor(Game* game)
 	:Actor(game)
@@ -25,13 +25,5 @@ TargetActor::TargetActor(Game* game)
 	// Add collision box
 	BoxComponent* bc = new BoxComponent(this);
 	bc->SetObjectBox(mesh->GetBox());
-	
-	// Add to radar
-	GetGame()->GetHUD()->AddBlipActor(this);
-}
-
-TargetActor::~TargetActor()
-{
-	// Remove from radar
-	GetGame()->GetHUD()->RemoveBlipActor(this);
+	new TargetComponent(this);
 }

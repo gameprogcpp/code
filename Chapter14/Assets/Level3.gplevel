@@ -11113,6 +11113,12 @@
                             200.0
                         ]
                     }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
                 }
             ]
         },
@@ -11168,6 +11174,12 @@
                             100.0,
                             500.0
                         ]
+                    }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
                     }
                 }
             ]
@@ -11225,6 +11237,12 @@
                             300.0
                         ]
                     }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
                 }
             ]
         },
@@ -11280,6 +11298,12 @@
                             600.0,
                             300.0
                         ]
+                    }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
                     }
                 }
             ]
@@ -11337,6 +11361,12 @@
                             300.0
                         ]
                     }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
                 }
             ]
         },
@@ -11393,6 +11423,12 @@
                             300.0
                         ]
                     }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
                 }
             ]
         },
@@ -11435,7 +11471,7 @@
                         "skelFile": "Assets/CatWarrior.gpskel",
                         "animFile": "Assets/CatActionIdle.gpanim",
                         "animPlayRate": 1.0,
-                        "animTime": 0.6669997572898865
+                        "animTime": 0.0
                     }
                 },
                 {

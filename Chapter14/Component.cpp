@@ -19,11 +19,11 @@ const char* Component::TypeNames[NUM_COMPONENT_TYPES] = {
 	"FollowCamera",
 	"MeshComponent",
 	"MoveComponent",
-	"PlayerMove",
 	"SkeletalMeshComponent",
 	"SpriteComponent",
 	"MirrorCamera",
-	"PointLightComponent"
+	"PointLightComponent",
+	"TargetComponent"
 };
 
 Component::Component(Actor* owner, int updateOrder)
