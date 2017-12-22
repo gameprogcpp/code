@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "BoxComponent.h"
@@ -15,6 +15,7 @@ BoxComponent::BoxComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
 	,mObjectBox(Vector3::Zero, Vector3::Zero)
 	,mWorldBox(Vector3::Zero, Vector3::Zero)
+	,mShouldRotate(true)
 {
 	mOwner->GetGame()->GetPhysWorld()->AddBox(this);
 }
@@ -31,8 +32,11 @@ void BoxComponent::OnUpdateWorldTransform()
 	// Scale
 	mWorldBox.mMin *= mOwner->GetScale();
 	mWorldBox.mMax *= mOwner->GetScale();
-	// Rotate
-	mWorldBox.Rotate(mOwner->GetRotation());
+	// Rotate (if we want to)
+	if (mShouldRotate)
+	{
+		mWorldBox.Rotate(mOwner->GetRotation());
+	}
 	// Translate
 	mWorldBox.mMin += mOwner->GetPosition();
 	mWorldBox.mMax += mOwner->GetPosition();

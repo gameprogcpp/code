@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "PlaneActor.h"
@@ -21,6 +21,13 @@ PlaneActor::PlaneActor(Game* game)
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Plane.gpmesh");
 	mc->SetMesh(mesh);
 	// Add collision box
-	BoxComponent* bc = new BoxComponent(this);
-	bc->SetObjectBox(mesh->GetBox());
+	mBox = new BoxComponent(this);
+	mBox->SetObjectBox(mesh->GetBox());
+
+	game->AddPlane(this);
+}
+
+PlaneActor::~PlaneActor()
+{
+	GetGame()->RemovePlane(this);
 }

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "Renderer.h"
@@ -31,8 +31,11 @@ Renderer::~Renderer()
 {
 }
 
-bool Renderer::Initialize()
+bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
+	mScreenWidth = screenWidth;
+	mScreenHeight = screenHeight;
+
 	// Set OpenGL attributes
 	// Use the core OpenGL profile
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -51,7 +54,7 @@ bool Renderer::Initialize()
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 12)", 100, 100,
-		1024, 768, SDL_WINDOW_OPENGL);
+		static_cast<int>(mScreenWidth), static_cast<int>(mScreenHeight), SDL_WINDOW_OPENGL);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -227,21 +230,6 @@ void Renderer::RemoveMeshComp(MeshComponent* mesh)
 	}
 }
 
-Texture* Renderer::LoadTexture(const char* fileName)
-{
-	Texture* tex = new Texture();
-	if (tex->Load(fileName))
-	{
-		mTextures.emplace(fileName, tex);
-		return tex;
-	}
-	else
-	{
-		delete tex;
-		return nullptr;
-	}
-}
-
 Texture* Renderer::GetTexture(const std::string& fileName)
 {
 	Texture* tex = nullptr;
@@ -250,22 +238,20 @@ Texture* Renderer::GetTexture(const std::string& fileName)
 	{
 		tex = iter->second;
 	}
-	return tex;
-}
-
-Mesh* Renderer::LoadMesh(const char * fileName)
-{
-	Mesh* m = new Mesh();
-	if (m->Load(fileName, this))
-	{
-		mMeshes.emplace(fileName, m);
-		return m;
-	}
 	else
 	{
-		delete m;
-		return nullptr;
+		tex = new Texture();
+		if (tex->Load(fileName))
+		{
+			mTextures.emplace(fileName, tex);
+		}
+		else
+		{
+			delete tex;
+			tex = nullptr;
+		}
 	}
+	return tex;
 }
 
 Mesh* Renderer::GetMesh(const std::string & fileName)
@@ -275,6 +261,19 @@ Mesh* Renderer::GetMesh(const std::string & fileName)
 	if (iter != mMeshes.end())
 	{
 		m = iter->second;
+	}
+	else
+	{
+		m = new Mesh();
+		if (m->Load(fileName, this))
+		{
+			mMeshes.emplace(fileName, m);
+		}
+		else
+		{
+			delete m;
+			m = nullptr;
+		}
 	}
 	return m;
 }
@@ -290,7 +289,7 @@ bool Renderer::LoadShaders()
 
 	mSpriteShader->SetActive();
 	// Set the view-projection matrix
-	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024.f, 768.f);
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(mScreenWidth, mScreenHeight);
 	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
 
 	// Create basic mesh shader
@@ -304,7 +303,7 @@ bool Renderer::LoadShaders()
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
 	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
-		1024.0f, 768.0f, 10.0f, 10000.0f);
+		mScreenWidth, mScreenHeight, 10.0f, 10000.0f);
 	mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
 
 	// Create skinned shader
@@ -318,7 +317,7 @@ bool Renderer::LoadShaders()
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
 	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
-		1024.0f, 768.0f, 10.0f, 10000.0f);
+		mScreenWidth, mScreenHeight, 10.0f, 10000.0f);
 	mSkinnedShader->SetMatrixUniform("uViewProj", mView * mProjection);
 	return true;
 }
@@ -355,16 +354,14 @@ void Renderer::SetLightUniforms(Shader* shader)
 		mDirLight.mDiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor",
 		mDirLight.mSpecColor);
-	shader->SetFloatUniform("uDirLight.mSpecPower",
-		mDirLight.mSpecPower);
 }
 
 Vector3 Renderer::Unproject(const Vector3& screenPoint) const
 {
 	// Convert screenPoint to device coordinates (between -1 and +1)
 	Vector3 deviceCoord = screenPoint;
-	deviceCoord.x /= (1024.0f) * 0.5f;
-	deviceCoord.y /= (768.0f) * 0.5f;
+	deviceCoord.x /= (mScreenWidth) * 0.5f;
+	deviceCoord.y /= (mScreenHeight) * 0.5f;
 
 	// Transform vector by unprojection matrix
 	Matrix4 unprojection = mView * mProjection;

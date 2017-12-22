@@ -21,11 +21,11 @@
     <ClCompile Include="BoxComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="DialogBox.cpp" />
     <ClCompile Include="FollowActor.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -36,7 +36,6 @@
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PhysWorld.cpp" />
     <ClCompile Include="PlaneActor.cpp" />
-    <ClCompile Include="PlayerMove.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkeletalMeshComponent.cpp" />
@@ -44,6 +43,7 @@
     <ClCompile Include="SoundEvent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TargetActor.cpp" />
+    <ClCompile Include="TargetComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UIScreen.cpp" />
     <ClCompile Include="VertexArray.cpp" />
@@ -59,11 +59,11 @@
     <ClInclude Include="BoxComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="DialogBox.h" />
     <ClInclude Include="FollowActor.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Font.h" />
-    <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Math.h" />
@@ -74,7 +74,6 @@
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PhysWorld.h" />
     <ClInclude Include="PlaneActor.h" />
-    <ClInclude Include="PlayerMove.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SkeletalMeshComponent.h" />
@@ -82,6 +81,7 @@
     <ClInclude Include="SoundEvent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TargetActor.h" />
+    <ClInclude Include="TargetComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UIScreen.h" />
     <ClInclude Include="VertexArray.h" />
@@ -91,7 +91,6 @@
     <None Include="Shaders\BasicMesh.vert" />
     <None Include="Shaders\Phong.frag" />
     <None Include="Shaders\Phong.vert" />
-    <None Include="Shaders\Skinned.vert" />
     <None Include="Shaders\Sprite.frag" />
     <None Include="Shaders\Sprite.vert" />
   </ItemGroup>
@@ -99,6 +98,7 @@
     <ProjectGuid>{BC508D87-495F-4554-932D-DD68388B63CC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Game</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -138,21 +138,23 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\SOIL\include;..\external\rapidjson\include;..\external\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\SOIL\include;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\external\SDL\lib\win\x86;..\external\GLEW\lib\win\x86;..\external\SOIL\lib\win\x86;..\external\FMOD\lib\win\x86\Logging;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\external\SDL\lib\win\x86;..\external\GLEW\lib\win\x86;..\external\SOIL\lib\win\x86;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;glew32.lib;SOIL.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)\..\external\SDL\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
 xcopy "$(ProjectDir)\..\external\GLEW\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)\..\external\FMOD\lib\win\x86\Logging\*.dll" "$(OutDir)" /i /s /y</Command>
+xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib\*.dll" "$(OutDir)" /i /s /y
+xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\*.dll" "$(OutDir)" /i /s /y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -165,7 +167,7 @@ xcopy "$(ProjectDir)\..\external\FMOD\lib\win\x86\Logging\*.dll" "$(OutDir)" /i 
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\SOIL\include;..\external\rapidjson\include;..\external\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\SOIL\include;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
@@ -174,13 +176,15 @@ xcopy "$(ProjectDir)\..\external\FMOD\lib\win\x86\Logging\*.dll" "$(OutDir)" /i 
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\external\SDL\lib\win\x86;..\external\GLEW\lib\win\x86;..\external\SOIL\lib\win\x86;..\external\FMOD\lib\win\x86\Logging;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\external\SDL\lib\win\x86;..\external\GLEW\lib\win\x86;..\external\SOIL\lib\win\x86;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;glew32.lib;SOIL.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)\..\external\SDL\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
 xcopy "$(ProjectDir)\..\external\GLEW\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)\..\external\FMOD\lib\win\x86\Logging\*.dll" "$(OutDir)" /i /s /y</Command>
+xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib\*.dll" "$(OutDir)" /i /s /y
+xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\*.dll" "$(OutDir)" /i /s /y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

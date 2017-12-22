@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -29,6 +29,8 @@ public:
 	float GetRadius() const { return mRadius; }
 	// Get object space bounding box
 	const AABB& GetBox() const { return mBox; }
+	// Get specular power of mesh
+	float GetSpecPower() const { return mSpecPower; }
 private:
 	// AABB collision
 	AABB mBox;
@@ -40,4 +42,6 @@ private:
 	std::string mShaderName;
 	// Stores object space bounding sphere radius
 	float mRadius;
+	// Specular power of surface
+	float mSpecPower;
 };

@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-//
+// 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "SkeletalMeshComponent.h"
@@ -33,6 +33,8 @@ void SkeletalMeshComponent::Draw(Shader* shader)
 		// Set the matrix palette
 		shader->SetMatrixUniforms("uMatrixPalette", &mPalette.mEntry[0], 
 			MAX_SKELETON_BONES);
+		// Set specular power
+		shader->SetFloatUniform("uSpecPower", mMesh->GetSpecPower());
 		// Set the active texture
 		Texture* t = mMesh->GetTexture(mTextureIndex);
 		if (t)
