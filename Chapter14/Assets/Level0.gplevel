@@ -1,0 +1,10 @@
+{
+	"version":1,
+	"globalProperties": {
+		"ambientLight": [0.2, 0.2, 0.2],
+		"directionalLight": {
+			"direction": [0.0, -0.707, -0.707],
+			"color": [0.78, 0.88, 1.0]
+		}
+	}
+}
