@@ -316,8 +316,8 @@ Vector3 Renderer::Unproject(const Vector3& screenPoint) const
 {
 	// Convert screenPoint to device coordinates (between -1 and +1)
 	Vector3 deviceCoord = screenPoint;
-	deviceCoord.x /= (1024.0f) * 0.5f;
-	deviceCoord.y /= (768.0f) * 0.5f;
+	deviceCoord.x /= (mScreenWidth) * 0.5f;
+	deviceCoord.y /= (mScreenHeight) * 0.5f;
 
 	// Transform vector by unprojection matrix
 	Matrix4 unprojection = mView * mProjection;
