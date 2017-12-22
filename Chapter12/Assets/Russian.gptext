@@ -1,0 +1,10 @@
+{
+	"TextMap":{
+		"PauseTitle": "ПАУЗА",
+		"ResumeButton": "Продолжить",
+		"QuitButton": "Уволиться",
+		"QuitText": "Вы хотите бросить курить?",
+		"OKButton": "ОК",
+		"CancelButton": "Отмена"
+	}
+}

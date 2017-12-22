@@ -7,9 +7,6 @@
 // ----------------------------------------------------------------
 
 #include "Game.h"
-#include <vector>
-#include <queue>
-#include <iostream>
 
 int main(int argc, char** argv)
 {
