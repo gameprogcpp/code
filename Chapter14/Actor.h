@@ -44,8 +44,10 @@ public:
 	void UpdateComponents(float deltaTime);
 	// Any actor-specific update code (overridable)
 	virtual void UpdateActor(float deltaTime);
+	// ProcessInput function called from Game (not overridable)
+	void ProcessInput(const uint8_t* keyState);
 	// Any actor-specific input code (overridable)
-	virtual void ProcessInput(const uint8_t* keys) { }
+	virtual void ActorInput(const uint8_t* keyState);
 
 	// Getters/setters
 	const Vector3& GetPosition() const { return mPosition; }

@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #include "UIScreen.h"
@@ -81,7 +81,7 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 		// Get position of mouse
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates (assume 1024x768)
+		// Convert to (0,0) center coordinates
 		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
 		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
 		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
@@ -158,24 +158,21 @@ void UIScreen::DrawTexture(class Shader* shader, class Texture* texture,
 				 const Vector2& offset, float scale, bool flipY)
 {
 	// Scale the quad by the width/height of texture
+	// and flip the y if we need to
+	float yScale = static_cast<float>(texture->GetHeight()) * scale;
+	if (flipY) { yScale *= -1.0f; }
 	Matrix4 scaleMat = Matrix4::CreateScale(
 		static_cast<float>(texture->GetWidth()) * scale,
-		static_cast<float>(texture->GetHeight()) * scale,
+		yScale,
 		1.0f);
-	
-	// Do we need to correct a y-flip?
-	Matrix4 flip;
-	if (flipY)
-	{
-		flip = Matrix4::CreateScale(1.0f, -1.0f, 1.0f);
-	}
+
 
 	// Translate to position on screen
 	Matrix4 transMat = Matrix4::CreateTranslation(
-		Vector3(offset.x, offset.y, 0.0f));	
-	
+		Vector3(offset.x, offset.y, 0.0f));
+
 	// Set world transform
-	Matrix4 world = scaleMat * flip * transMat;
+	Matrix4 world = scaleMat * transMat;
 	shader->SetMatrixUniform("uWorldTransform", world);
 	// Set current texture
 	texture->SetActive();

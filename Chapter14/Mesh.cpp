@@ -40,6 +40,7 @@ namespace
 		// Box/radius of mesh, used for collision
 		AABB mBox{ Vector3::Zero, Vector3::Zero };
 		float mRadius = 0.0f;
+		float mSpecPower = 100.0f;
 	};
 }
 
@@ -47,6 +48,7 @@ Mesh::Mesh()
 	:mBox(Vector3::Infinity, Vector3::NegInfinity)
 	,mVertexArray(nullptr)
 	,mRadius(0.0f)
+	,mSpecPower(100.0f)
 {
 }
 
@@ -101,6 +103,8 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
 		SDL_Log("Mesh %s has no textures, there should be at least one", fileName.c_str());
 		return false;
 	}
+
+	mSpecPower = static_cast<float>(doc["specularPower"].GetDouble());
 
 	std::vector<std::string> textureNames;
 	for (rapidjson::SizeType i = 0; i < textures.Size(); i++)
@@ -217,7 +221,8 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
 	SaveBinary(fileName + ".bin", vertices.data(),
 		numVerts, layout, indices.data(),
 		static_cast<unsigned>(indices.size()),
-		textureNames, mBox, mRadius);
+		textureNames, mBox, mRadius,
+		mSpecPower);
 	return true;
 }
 
@@ -243,7 +248,8 @@ void Mesh::SaveBinary(const std::string& fileName, const void* verts,
 	uint32_t numVerts, VertexArray::Layout layout,
 	const uint32_t* indices, uint32_t numIndices,
 	const std::vector<std::string>& textureNames,
-	const AABB& box, float radius)
+	const AABB& box, float radius,
+	float specPower)
 {
 	// Create header struct
 	MeshBinHeader header;
@@ -345,9 +351,10 @@ bool Mesh::LoadBinary(const std::string& fileName, Renderer* renderer)
 		delete[] verts;
 		delete[] indices;
 
-		// Set mBox/mRadius from header
+		// Set mBox/mRadius/specular from header
 		mBox = header.mBox;
 		mRadius = header.mRadius;
+		mSpecPower = header.mSpecPower;
 
 		return true;
 	}

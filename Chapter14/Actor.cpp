@@ -9,7 +9,6 @@
 #include "Actor.h"
 #include "Game.h"
 #include "Component.h"
-#include <algorithm>
 #include "LevelLoader.h"
 
 const char* Actor::TypeNames[NUM_ACTOR_TYPES] = {
@@ -67,6 +66,25 @@ void Actor::UpdateActor(float deltaTime)
 {
 }
 
+void Actor::ProcessInput(const uint8_t* keyState)
+{
+	if (mState == EActive)
+	{
+		// First process input for components
+		for (auto comp : mComponents)
+		{
+			comp->ProcessInput(keyState);
+		}
+
+		ActorInput(keyState);
+	}
+}
+
+void Actor::ActorInput(const uint8_t* keyState)
+{
+
+}
+
 void Actor::ComputeWorldTransform()
 {
 	mRecomputeTransform = false;
@@ -108,10 +126,22 @@ void Actor::RotateToNewForward(const Vector3& forward)
 
 void Actor::AddComponent(Component* component)
 {
-	mComponents.emplace_back(component);
-	std::sort(mComponents.begin(), mComponents.end(), [](Component* a, Component* b) {
-		return a->GetUpdateOrder() < b->GetUpdateOrder();
-	});
+	// Find the insertion point in the sorted vector
+	// (The first element with a order higher than me)
+	int myOrder = component->GetUpdateOrder();
+	auto iter = mComponents.begin();
+	for (;
+		iter != mComponents.end();
+		++iter)
+	{
+		if (myOrder < (*iter)->GetUpdateOrder())
+		{
+			break;
+		}
+	}
+
+	// Inserts element before position of iterator
+	mComponents.insert(iter, component);
 }
 
 void Actor::RemoveComponent(Component* component)

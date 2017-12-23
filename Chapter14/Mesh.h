@@ -32,13 +32,16 @@ public:
 	float GetRadius() const { return mRadius; }
 	// Get object space bounding box
 	const AABB& GetBox() const { return mBox; }
+	// Get specular power of mesh
+	float GetSpecPower() const { return mSpecPower; }
 
 	// Save the mesh in binary format
 	void SaveBinary(const std::string& fileName, const void* verts, 
 		uint32_t numVerts, VertexArray::Layout layout,
 		const uint32_t* indices, uint32_t numIndices,
 		const std::vector<std::string>& textureNames,
-		const AABB& box, float radius);
+		const AABB& box, float radius,
+		float specPower);
 	// Load in the mesh from binary format
 	bool LoadBinary(const std::string& fileName, class Renderer* renderer);
 private:
@@ -54,4 +57,6 @@ private:
 	std::string mFileName;
 	// Stores object space bounding sphere radius
 	float mRadius;
+	// Specular power of surface
+	float mSpecPower;
 };

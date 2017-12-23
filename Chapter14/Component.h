@@ -41,6 +41,8 @@ public:
 	virtual ~Component();
 	// Update this component by delta time
 	virtual void Update(float deltaTime);
+	// Process input for this component
+	virtual void ProcessInput(const uint8_t* keyState) {}
 	// Called when world transform changes
 	virtual void OnUpdateWorldTransform();
 

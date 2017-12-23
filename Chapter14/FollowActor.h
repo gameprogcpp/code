@@ -14,7 +14,7 @@ class FollowActor : public Actor
 public:
 	FollowActor(class Game* game);
 
-	void ProcessInput(const uint8_t* keys) override;
+	void ActorInput(const uint8_t* keys) override;
 
 	void SetVisible(bool visible);
 

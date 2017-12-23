@@ -36,7 +36,7 @@ FollowActor::FollowActor(Game* game)
 	game->SetFollowActor(this);
 }
 
-void FollowActor::ProcessInput(const uint8_t* keys)
+void FollowActor::ActorInput(const uint8_t* keys)
 {
 	float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;

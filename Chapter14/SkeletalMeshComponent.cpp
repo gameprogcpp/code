@@ -34,6 +34,8 @@ void SkeletalMeshComponent::Draw(Shader* shader)
 		// Set the matrix palette
 		shader->SetMatrixUniforms("uMatrixPalette", &mPalette.mEntry[0], 
 			MAX_SKELETON_BONES);
+		// Set specular power
+		shader->SetFloatUniform("uSpecPower", mMesh->GetSpecPower());
 		// Set the active texture
 		Texture* t = mMesh->GetTexture(mTextureIndex);
 		if (t)
@@ -54,9 +56,9 @@ void SkeletalMeshComponent::Update(float deltaTime)
 	{
 		mAnimTime += deltaTime * mAnimPlayRate;
 		// Wrap around anim time if past duration
-		while (mAnimTime > mAnimation->GetLength())
+		while (mAnimTime > mAnimation->GetDuration())
 		{
-			mAnimTime -= mAnimation->GetLength();
+			mAnimTime -= mAnimation->GetDuration();
 		}
 
 		// Recompute matrix palette
@@ -74,7 +76,7 @@ float SkeletalMeshComponent::PlayAnimation(Animation* anim, float playRate)
 
 	ComputeMatrixPalette();
 
-	return mAnimation->GetLength();
+	return mAnimation->GetDuration();
 }
 
 void SkeletalMeshComponent::LoadProperties(const rapidjson::Value& inObj)

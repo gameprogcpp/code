@@ -3,7 +3,7 @@
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 // 
 // Released under the BSD License
-// See LICENSE.txt for full details.
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
 #pragma once
@@ -26,7 +26,9 @@ public:
 	void LoadProperties(const rapidjson::Value& inObj) override;
 	void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const override;
+	void SetShouldRotate(bool value) { mShouldRotate = value; }
 private:
 	AABB mObjectBox;
 	AABB mWorldBox;
+	bool mShouldRotate;
 };

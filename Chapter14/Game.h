@@ -77,6 +77,8 @@ private:
 
 	// Map for text localization
 	std::unordered_map<std::string, std::string> mText;
+	// Any pending actors
+	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
 	class AudioSystem* mAudioSystem;
@@ -85,6 +87,8 @@ private:
 
 	Uint32 mTicksCount;
 	GameState mGameState;
+	// Track if we're updating actors right now
+	bool mUpdatingActors;
 
 	// Game-specific code
 	class FollowActor* mFollowActor;
