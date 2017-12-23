@@ -189,11 +189,22 @@ void Renderer::Draw()
 
 void Renderer::AddSprite(SpriteComponent* sprite)
 {
-	mSprites.emplace_back(sprite);
-	// Resort sprites by draw order
-	std::sort(mSprites.begin(), mSprites.end(), [](SpriteComponent* a, SpriteComponent* b) {
-		return a->GetDrawOrder() < b->GetDrawOrder();
-	});
+	// Find the insertion point in the sorted vector
+	// (The first element with a higher draw order than me)
+	int myDrawOrder = sprite->GetDrawOrder();
+	auto iter = mSprites.begin();
+	for (;
+		iter != mSprites.end();
+		++iter)
+	{
+		if (myDrawOrder < (*iter)->GetDrawOrder())
+		{
+			break;
+		}
+	}
+
+	// Inserts element before position of iterator
+	mSprites.insert(iter, sprite);
 }
 
 void Renderer::RemoveSprite(SpriteComponent* sprite)

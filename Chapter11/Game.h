@@ -46,7 +46,6 @@ public:
 	GameState GetState() const { return mGameState; }
 	void SetState(GameState state) { mGameState = state; }
 	
-	void LoadFont(const std::string& fileName);
 	class Font* GetFont(const std::string& fileName);
 
 	void LoadText(const std::string& fileName);

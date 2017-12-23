@@ -8,6 +8,6 @@ Release/
 *.xccheckout
 *.stackdump
 .vs
-Chapter15/Assets/Saved.gplevel
-Chapter15/Assets/*.bin
+Chapter14/Assets/Saved.gplevel
+Chapter14/Assets/*.bin
 External/FMOD

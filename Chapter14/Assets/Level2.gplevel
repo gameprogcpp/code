@@ -1,0 +1,73 @@
+{
+	"version": 1,
+	"globalProperties": {
+		"ambientLight": [0.2, 0.2, 0.2],
+		"directionalLight": {
+			"direction": [0.0, -0.707, -0.707],
+			"color": [0.78, 0.88, 1.0]
+		}
+	},
+	"actors": [
+		{
+			"type": "Actor",
+			"properties": {
+				"position": [0.0, 0.0, 0.0],
+				"scale": 5.0
+			},
+			"components": [
+				{
+					"type": "MeshComponent",
+					"properties": {
+						"meshFile": "Assets/Sphere.gpmesh"
+					}
+				}
+			]
+		},
+		{
+			"type": "TargetActor",
+			"properties": {
+				"position": [1450.0, 0.0, 100.0]
+			},
+			"components": [
+				{
+					"type": "MeshComponent",
+					"properties": {
+						"meshFile": "Assets/Sphere.gpmesh"
+					}
+				}
+			]
+		},
+		{
+			"type": "TargetActor",
+			"properties": {
+				"position": [1450.0, 0.0, 400.0]
+			}
+		},
+		{
+			"type": "TargetActor",
+			"properties": {
+				"position": [1450.0, -500.0, 200.0]
+			}
+		},
+		{
+			"type": "TargetActor",
+			"properties": {
+				"position": [1450.0, 500.0, 200.0]
+			}
+		},
+		{
+			"type": "TargetActor",
+			"properties": {
+				"position": [0.0, -1450.0, 200.0],
+				"rotation": [0.0, 0.0, 0.7071, 0.7071]
+			}
+		},
+		{
+			"type": "TargetActor",
+			"properties": {
+				"position": [0.0, 1450.0, 200.0],
+				"rotation": [0.0, 0.0, -0.7071, 0.7071]
+			}
+		}
+	]
+}

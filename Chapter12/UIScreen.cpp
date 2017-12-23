@@ -81,10 +81,10 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 		// Get position of mouse
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates (assume 1024x768)
+		// Convert to (0,0) center coordinates
 		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
-		mousePos.x -= 512.0f;
-		mousePos.y = 384.0f - mousePos.y;
+		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
+		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
 		
 		// Highlight any buttons
 		for (auto b : mButtons)
