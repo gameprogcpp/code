@@ -471,7 +471,8 @@ void JsonHelper::AddString(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, const std::string& value)
 {
 	rapidjson::Value v;
-	v.SetString(value.c_str(), value.length(), alloc);
+	v.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.length()),
+				alloc);
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 
