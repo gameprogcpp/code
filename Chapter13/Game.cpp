@@ -293,7 +293,6 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	LoadFont("Assets/Carlito-Regular.ttf");
 	// Load English text
 	LoadText("Assets/English.gptext");
 
@@ -503,20 +502,6 @@ void Game::PushUI(UIScreen* screen)
 	mUIStack.emplace_back(screen);
 }
 
-void Game::LoadFont(const std::string& fileName)
-{
-	Font* font = new Font(this);
-	if (font->Load(fileName))
-	{
-		mFonts.emplace(fileName, font);
-	}
-	else
-	{
-		font->Unload();
-		delete font;
-	}
-}
-
 Font* Game::GetFont(const std::string& fileName)
 {
 	auto iter = mFonts.find(fileName);
@@ -526,7 +511,18 @@ Font* Game::GetFont(const std::string& fileName)
 	}
 	else
 	{
-		return nullptr;
+		Font* font = new Font(this);
+		if (font->Load(fileName))
+		{
+			mFonts.emplace(fileName, font);
+		}
+		else
+		{
+			font->Unload();
+			delete font;
+			font = nullptr;
+		}
+		return font;
 	}
 }
 
