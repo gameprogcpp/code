@@ -52,7 +52,7 @@ bool Game::Initialize()
 	// Force OpenGL to use hardware acceleration
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 5)", 100, 100,
+	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 8)", 100, 100,
 							   1024, 768, SDL_WINDOW_OPENGL);
 	if (!mWindow)
 	{
