@@ -20,7 +20,7 @@ BoardState::BoardState()
 	}
 }
 
-std::vector<BoardState*> BoardState::GetPossibleMoves() const
+std::vector<BoardState*> BoardState::GetPossibleMoves(SquareState player) const
 {
 	std::vector<BoardState*> retVal;
 
@@ -32,7 +32,7 @@ std::vector<BoardState*> BoardState::GetPossibleMoves() const
 			if (mBoard[row][col] == BoardState::Empty)
 			{
 				retVal.emplace_back(new BoardState(*this));
-				retVal.back()->mBoard[row][col] = BoardState::Red;
+				retVal.back()->mBoard[row][col] = player;
 				break;
 			}
 		}
@@ -96,7 +96,7 @@ bool BoardState::IsFull() const
 
 int BoardState::GetFourInARow() const
 {
-	// Returns 1 if yellow wins, -1 if red wins, 0 otherwise
+	// Returns -1 if yellow wins, 1 if red wins, 0 otherwise
 
 	// Check if there's a row with four in a row
 	for (int row = 0; row < 6; row++)
@@ -109,11 +109,11 @@ int BoardState::GetFourInARow() const
 			{
 				if (mBoard[row][col] == BoardState::Yellow)
 				{
-					return 1;
+					return -1;
 				}
 				else if (mBoard[row][col] == BoardState::Red)
 				{
-					return -1;
+					return 1;
 				}
 			}
 		}
@@ -130,11 +130,11 @@ int BoardState::GetFourInARow() const
 			{
 				if (mBoard[row][col] == BoardState::Yellow)
 				{
-					return 1;
+					return -1;
 				}
 				else if (mBoard[row][col] == BoardState::Red)
 				{
-					return -1;
+					return 1;
 				}
 			}
 		}
@@ -144,18 +144,18 @@ int BoardState::GetFourInARow() const
 	for (int col = 0; col < 4; col++)
 	{
 		for (int row = 0; row < 3; row++)
-		{ 
+		{
 			if (mBoard[row][col] == mBoard[row + 1][col + 1] &&
 				mBoard[row][col] == mBoard[row + 2][col + 2] &&
 				mBoard[row][col] == mBoard[row + 3][col + 3])
 			{
 				if (mBoard[row][col] == BoardState::Yellow)
 				{
-					return 1;
+					return -1;
 				}
 				else if (mBoard[row][col] == BoardState::Red)
 				{
-					return -1;
+					return 1;
 				}
 			}
 		}
@@ -172,11 +172,11 @@ int BoardState::GetFourInARow() const
 			{
 				if (mBoard[row][col] == BoardState::Yellow)
 				{
-					return 1;
+					return -1;
 				}
 				else if (mBoard[row][col] == BoardState::Red)
 				{
-					return -1;
+					return 1;
 				}
 			}
 		}
@@ -209,7 +209,7 @@ bool TryPlayerMove(BoardState* state, int column)
 void CPUMove(BoardState* state)
 {
 	// For now, this just randomly picks one of the possible moves
-	std::vector<BoardState*> moves = state->GetPossibleMoves();
+	std::vector<BoardState*> moves = state->GetPossibleMoves(BoardState::Red);
 
 	int index = Random::GetIntRange(0, moves.size() - 1);
 

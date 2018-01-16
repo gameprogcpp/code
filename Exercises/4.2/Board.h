@@ -12,12 +12,12 @@
 class BoardState
 {
 public:
+	enum SquareState { Empty, Red, Yellow };
 	BoardState();
-	std::vector<BoardState*> GetPossibleMoves() const;
+	std::vector<BoardState*> GetPossibleMoves(SquareState player) const;
 	bool IsTerminal() const;
 	float GetScore() const;
 
-	enum SquareState { Empty, Red, Yellow };
 	SquareState mBoard[6][7];
 protected:
 	bool IsFull() const;
