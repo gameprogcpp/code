@@ -20,7 +20,7 @@ BoardState::BoardState()
 	}
 }
 
-std::vector<BoardState*> BoardState::GetPossibleMoves()
+std::vector<BoardState*> BoardState::GetPossibleMoves() const
 {
 	std::vector<BoardState*> retVal;
 
@@ -41,7 +41,7 @@ std::vector<BoardState*> BoardState::GetPossibleMoves()
 	return retVal;
 }
 
-bool BoardState::IsTerminal()
+bool BoardState::IsTerminal() const
 {
 	// Is the board full?
 	if (IsFull())
@@ -59,7 +59,7 @@ bool BoardState::IsTerminal()
 	return false;
 }
 
-float BoardState::GetScore()
+float BoardState::GetScore() const
 {
 	// If the board is full, the score is 0
 	if (IsFull())
@@ -77,7 +77,7 @@ float BoardState::GetScore()
 	return CalculateHeuristic();
 }
 
-bool BoardState::IsFull()
+bool BoardState::IsFull() const
 {
 	bool isFull = true;
 	for (int i = 0; i < 6; i++)
@@ -94,7 +94,7 @@ bool BoardState::IsFull()
 	return isFull;
 }
 
-int BoardState::GetFourInARow()
+int BoardState::GetFourInARow() const
 {
 	// Returns 1 if yellow wins, -1 if red wins, 0 otherwise
 
@@ -184,7 +184,7 @@ int BoardState::GetFourInARow()
 	return 0;
 }
 
-float BoardState::CalculateHeuristic()
+float BoardState::CalculateHeuristic() const
 {
 	// TODO: You could change this to calculate an actual heuristic
 	return 0.0f;

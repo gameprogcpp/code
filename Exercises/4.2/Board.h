@@ -13,16 +13,16 @@ class BoardState
 {
 public:
 	BoardState();
-	std::vector<BoardState*> GetPossibleMoves();
-	bool IsTerminal();
-	float GetScore();
+	std::vector<BoardState*> GetPossibleMoves() const;
+	bool IsTerminal() const;
+	float GetScore() const;
 
 	enum SquareState { Empty, Red, Yellow };
 	SquareState mBoard[6][7];
 protected:
-	bool IsFull();
-	int GetFourInARow();
-	float CalculateHeuristic();
+	bool IsFull() const;
+	int GetFourInARow() const;
+	float CalculateHeuristic() const;
 };
 
 // Try to place the player's piece
