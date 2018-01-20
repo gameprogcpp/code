@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.09.00">
+    <object class="AudioFile" id="{d0d48d00-9bc7-4dc5-96cf-5a0ce45ac0de}">
+        <property name="assetPath">
+            <value>47835__tc630__fire2.wav</value>
+        </property>
+        <property name="isStreaming">
+            <value>true</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>48</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>12</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{ab2d50f9-072f-433d-950e-e62e89beb8cb}</destination>
+        </relationship>
+    </object>
+</objects>
