@@ -1,0 +1,3 @@
+Walking - 01 through 06
+Jumping - 07 through 15
+Punch - 16 through 18

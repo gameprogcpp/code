@@ -7,91 +7,50 @@
 // ----------------------------------------------------------------
 
 #include "Game.h"
-#include <GL/glew.h>
-#include "Texture.h"
-#include "VertexArray.h"
-#include "Shader.h"
+#include "SDL/SDL_image.h"
 #include <algorithm>
 #include "Actor.h"
 #include "SpriteComponent.h"
-#include "Actor.h"
-#include "Ship.h"
-#include "Asteroid.h"
 #include "Random.h"
-#include "InputSystem.h"
 
 Game::Game()
 :mWindow(nullptr)
-,mSpriteShader(nullptr)
+,mRenderer(nullptr)
 ,mIsRunning(true)
 ,mUpdatingActors(false)
 {
+	
 }
 
 bool Game::Initialize()
 {
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_GAMECONTROLLER) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
 	{
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
 	
-	// Set OpenGL attributes
-	// Use the core OpenGL profile
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	// Specify version 3.3
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	// Request a color buffer with 8-bits per RGBA channel
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-	// Enable double buffering
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	// Force OpenGL to use hardware acceleration
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 8)", 100, 100,
-							   1024, 768, SDL_WINDOW_OPENGL);
+	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 4)", 100, 100, 1024, 768, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
 		return false;
 	}
-
-	// Initialize input system
-	mInputSystem = new InputSystem();
-	if (!mInputSystem->Initialize())
+	
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (!mRenderer)
 	{
-		SDL_Log("Failed to initialize input system");
+		SDL_Log("Failed to create renderer: %s", SDL_GetError());
 		return false;
 	}
 	
-	// Create an OpenGL context
-	mContext = SDL_GL_CreateContext(mWindow);
-	
-	// Initialize GLEW
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
+	if (IMG_Init(IMG_INIT_PNG) == 0)
 	{
-		SDL_Log("Failed to initialize GLEW.");
-		return false;
-	}
-	
-	// On some platforms, GLEW will emit a benign error code,
-	// so clear it
-	glGetError();
-	
-	// Make sure we can create/compile shaders
-	if (!LoadShaders())
-	{
-		SDL_Log("Failed to load shaders.");
+		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
 		return false;
 	}
 
-	// Create quad for drawing sprites
-	CreateSpriteVerts();
+	Random::Init();
 
 	LoadData();
 
@@ -112,8 +71,6 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
-	mInputSystem->PrepareForUpdate();
-
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -122,19 +79,32 @@ void Game::ProcessInput()
 			case SDL_QUIT:
 				mIsRunning = false;
 				break;
-			case SDL_MOUSEWHEEL:
-				mInputSystem->ProcessEvent(event);
-				break;
-			default:
+			// Process mouse button event
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_LEFT &&
+					!mBoardState.IsTerminal())
+				{
+					// Convert x into column
+					int col = event.button.x - 64;
+					if (col >= 0)
+					{
+						col /= 128;
+						if (col <= 6)
+						{
+							bool playerMoved = TryPlayerMove(&mBoardState, col);
+							if (playerMoved && !mBoardState.IsTerminal())
+							{
+								CPUMove(&mBoardState);
+							}
+						}
+					}
+				}
 				break;
 		}
 	}
-
-	mInputSystem->Update();
-	const InputState& state = mInputSystem->GetState();
 	
-	if (state.Keyboard.GetKeyState(SDL_SCANCODE_ESCAPE)
-		== EReleased)
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
@@ -142,7 +112,7 @@ void Game::ProcessInput()
 	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
-		actor->ProcessInput(state);
+		actor->ProcessInput(keyState);
 	}
 	mUpdatingActors = false;
 }
@@ -172,7 +142,6 @@ void Game::UpdateGame()
 	// Move any pending actors to mActors
 	for (auto pending : mPendingActors)
 	{
-		pending->ComputeWorldTransform();
 		mActors.emplace_back(pending);
 	}
 	mPendingActors.clear();
@@ -196,72 +165,45 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	// Set the clear color to grey
-	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
-	// Clear the color buffer
-	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+	SDL_RenderClear(mRenderer);
 	
 	// Draw all sprite components
-	// Enable alpha blending on the color buffer
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	// Set shader/vao as active
-	mSpriteShader->SetActive();
-	mSpriteVerts->SetActive();
 	for (auto sprite : mSprites)
 	{
-		sprite->Draw(mSpriteShader);
+		sprite->Draw(mRenderer);
 	}
 
-	// Swap the buffers
-	SDL_GL_SwapWindow(mWindow);
-}
+	// For Exercise 4.2
+	// Draw background
+	DrawTexture(GetTexture("Assets/Board.png"), Vector2(512.0f, 384.0f),
+		Vector2(896.0f, 768.0f));
 
-bool Game::LoadShaders()
-{
-	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
+	// Draw pieces
+	for (int i = 0; i < 6; i++)
 	{
-		return false;
+		for (int j = 0; j < 7; j++)
+		{
+			Vector2 pos(j * 128.0f + 128.0f, i * 128.0f + 64.0f);
+			if (mBoardState.mBoard[i][j] == BoardState::Yellow)
+			{
+				DrawTexture(GetTexture("Assets/YellowPiece.png"), pos,
+					Vector2(128.0f, 128.0f));
+			}
+			else if (mBoardState.mBoard[i][j] == BoardState::Red)
+			{
+				DrawTexture(GetTexture("Assets/RedPiece.png"), pos,
+					Vector2(128.0f, 128.0f));
+			}
+		}
 	}
 
-	mSpriteShader->SetActive();
-	// Set the view-projection matrix
-	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024.f, 768.f);
-	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
-	return true;
-}
-
-void Game::CreateSpriteVerts()
-{
-	float vertices[] = {
-		-0.5f,  0.5f, 0.f, 0.f, 0.f, // top left
-		 0.5f,  0.5f, 0.f, 1.f, 0.f, // top right
-		 0.5f, -0.5f, 0.f, 1.f, 1.f, // bottom right
-		-0.5f, -0.5f, 0.f, 0.f, 1.f  // bottom left
-	};
-
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	mSpriteVerts = new VertexArray(vertices, 4, indices, 6);
+	SDL_RenderPresent(mRenderer);
 }
 
 void Game::LoadData()
 {
-	// Create player's ship
-	mShip = new Ship(this);
-	mShip->SetRotation(Math::PiOver2);
 
-	// Create asteroids
-	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++)
-	{
-		new Asteroid(this);
-	}
 }
 
 void Game::UnloadData()
@@ -276,15 +218,15 @@ void Game::UnloadData()
 	// Destroy textures
 	for (auto i : mTextures)
 	{
-		i.second->Unload();
-		delete i.second;
+		SDL_DestroyTexture(i.second);
 	}
 	mTextures.clear();
 }
 
-Texture* Game::GetTexture(const std::string& fileName)
+SDL_Texture* Game::GetTexture(const std::string& fileName)
 {
-	Texture* tex = nullptr;
+	SDL_Texture* tex = nullptr;
+	// Is the texture already in the map?
 	auto iter = mTextures.find(fileName);
 	if (iter != mTextures.end())
 	{
@@ -292,46 +234,50 @@ Texture* Game::GetTexture(const std::string& fileName)
 	}
 	else
 	{
-		tex = new Texture();
-		if (tex->Load(fileName))
+		// Load from file
+		SDL_Surface* surf = IMG_Load(fileName.c_str());
+		if (!surf)
 		{
-			mTextures.emplace(fileName, tex);
+			SDL_Log("Failed to load texture file %s", fileName.c_str());
+			return nullptr;
 		}
-		else
+
+		// Create texture from surface
+		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+		SDL_FreeSurface(surf);
+		if (!tex)
 		{
-			delete tex;
-			tex = nullptr;
+			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
+			return nullptr;
 		}
+
+		mTextures.emplace(fileName.c_str(), tex);
 	}
 	return tex;
 }
 
-void Game::AddAsteroid(Asteroid* ast)
+void Game::DrawTexture(SDL_Texture* texture, const Vector2& pos, const Vector2& size)
 {
-	mAsteroids.emplace_back(ast);
-}
+	SDL_Rect r;
+	// Scale the width/height by owner's scale
+	r.w = static_cast<int>(size.x);
+	r.h = static_cast<int>(size.y);
+	// Center the rectangle around the position of the owner
+	r.x = static_cast<int>(pos.x) - r.w / 2;
+	r.y = static_cast<int>(pos.y) - r.h / 2;
 
-void Game::RemoveAsteroid(Asteroid* ast)
-{
-	auto iter = std::find(mAsteroids.begin(),
-		mAsteroids.end(), ast);
-	if (iter != mAsteroids.end())
-	{
-		mAsteroids.erase(iter);
-	}
+	// Draw (have to convert angle from radians to degrees, and clockwise to counter)
+	SDL_RenderCopy(mRenderer,
+		texture,
+		nullptr,
+		&r);
 }
 
 void Game::Shutdown()
 {
 	UnloadData();
-
-	mInputSystem->Shutdown();
-	delete mInputSystem;
-
-	delete mSpriteVerts;
-	mSpriteShader->Unload();
-	delete mSpriteShader;
-	SDL_GL_DeleteContext(mContext);
+	IMG_Quit();
+	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }
@@ -376,7 +322,7 @@ void Game::AddSprite(SpriteComponent* sprite)
 	// (The first element with a higher draw order than me)
 	int myDrawOrder = sprite->GetDrawOrder();
 	auto iter = mSprites.begin();
-	for (;
+	for ( ;
 		iter != mSprites.end();
 		++iter)
 	{
@@ -392,6 +338,7 @@ void Game::AddSprite(SpriteComponent* sprite)
 
 void Game::RemoveSprite(SpriteComponent* sprite)
 {
+	// (We can't swap because it ruins ordering)
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
 }
