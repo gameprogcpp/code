@@ -60,6 +60,7 @@ void main()
 	if (NdotL > 0)
 	{
 		vec3 Diffuse = uDirLight.mDiffuseColor * dot(N, L);
+		Phong += Diffuse;
 	}
 	// Clamp light between 0-1 RGB values
 	Phong = clamp(Phong, 0.0, 1.0);
