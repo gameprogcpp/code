@@ -19,10 +19,10 @@ def write_gpmesh(context, filepath, vertFormat):
         f.write("\t\"textures\":[\n")
         f.write("\t\t\"" + texname + "\"\n")
         f.write("\t],\n")
-		  
-		  # specular power
-		  f.write("\t\"specularPower\":100,\n")
-		  
+        
+        # specular power
+        f.write("\t\"specularPower\":100,\n")
+         
         # vertices
         # We have to create our own storage for because uvs are stored separately
         verts = [dict() for x in range(len(mesh.vertices))]
