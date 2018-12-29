@@ -43,7 +43,7 @@ def write_gpmesh(context, filepath, vertFormat):
                 f.write(",\n\t\t[")
             f.write("%f,%f,%f," % (v["pos"].x, v["pos"].y, v["pos"].z))
             f.write("%f,%f,%f," % (v["norm"].x, v["norm"].y, v["norm"].z))
-            f.write("%f,%f" % (v["uv"].x, v["uv"].y))
+            f.write("%f,%f" % (v["uv"].x, -1.0 * v["uv"].y))
             f.write("]")
         f.write("\n\t],\n")
         
