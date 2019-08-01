@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"FriendlyName": "Game Programming in C++ Mesh Exporter",
+	"Version": 1,
+	"VersionName": "1.0",
+	"CreatedBy": "",
+	"CreatedByURL": "",
+	"Category": "Other",
+	"Description": "Exports meshes, skeletons, and animations to Game Programming in C++ Formats",
+	"EnabledByDefault": false,
+	"Modules": [
+		{
+			"Name": "GPMeshExporter",
+			"Type": "Developer",
+			"LoadingPhase": "Default"
+		}
+	]
+}
