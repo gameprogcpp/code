@@ -33,6 +33,7 @@ bool PhysWorld::SegmentCast(const LineSegment& l, CollisionInfo& outColl)
 			// Is this closer than previous intersection?
 			if (t < closestT)
 			{
+				closestT = t;
 				outColl.mPoint = l.PointOnSegment(t);
 				outColl.mNormal = norm;
 				outColl.mBox = box;
