@@ -2,7 +2,7 @@
 This repository contains the source code for *Game Programming in C++* by Sanjay Madhav.
 
 The source code for the chapters is released under the BSD 3-clause
-license. See LICENSE for more detail. Note that this license does not apply to
+license. See LICENSE for more details. Note that this license does not apply to
 the code in the External directory. Each External project is licensed separately.
 
 # Building the Code
