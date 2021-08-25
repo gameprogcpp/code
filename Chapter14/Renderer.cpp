@@ -439,7 +439,7 @@ void Renderer::DrawFromGBuffer()
 	// Set the point light shader and mesh as active
 	mGPointLightShader->SetActive();
 	mPointLightMesh->GetVertexArray()->SetActive();
-	// Set the view-projeciton matrix
+	// Set the view-projection matrix
 	mGPointLightShader->SetMatrixUniform("uViewProj",
 		mView * mProjection);
 	// Set the G-buffer textures for sampling

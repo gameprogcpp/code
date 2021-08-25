@@ -13,7 +13,7 @@ class AnimSpriteComponent : public SpriteComponent
 {
 public:
 	AnimSpriteComponent(class Actor* owner, int drawOrder = 100);
-	// Update animation every frame (overriden from component)
+	// Update animation every frame (overridden from component)
 	void Update(float deltaTime) override;
 	// Set the textures used for animation
 	void SetAnimTextures(const std::vector<SDL_Texture*>& textures);

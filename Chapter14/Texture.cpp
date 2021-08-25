@@ -58,7 +58,7 @@ bool Texture::Load(const std::string& fileName)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	// Enable aniostropic filtering, if supported
+	// Enable anisotropic filtering, if supported
 	if (GLEW_EXT_texture_filter_anisotropic)
 	{
 		// Get the maximum anisotropy value
