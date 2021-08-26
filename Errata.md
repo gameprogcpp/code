@@ -20,6 +20,10 @@ please create an issue on this GitHub repository.
 * Chapter 6
   - Page 199: The reference to "horizontal" field of view should say "vertical" field of view, since it
     affects the y-component (found by Takashi Imagire)
+ * Chapter 7
+  - Page 386: The virtual position of sound equation yields a vector rather than a position (The virtual position
+    of the sound is obtained by adding the camera position to that vector). This equation is required for Ex 7.2
+    (found by Joshua Hardman)
 * Chapter 13
   - Page 396: In the equations for bilinear interpolation, the vFactor component should access the .v
     components of P, A, and C, not the .u components (found by Takashi Imagire)
