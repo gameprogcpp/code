@@ -91,7 +91,7 @@ public:
 		return t;
 	}
 
-	// Search throuch component vector for one of type
+	// Search through component vector for one of type
 	Component* GetComponentOfType(Component::TypeID type)
 	{
 		Component* comp = nullptr;

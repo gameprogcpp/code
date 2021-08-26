@@ -16,7 +16,7 @@ public:
 	SoundEvent();
 	// Returns true if associated FMOD event still exists
 	bool IsValid();
-	// Restart event from begining
+	// Restart event from beginning
 	void Restart();
 	// Stop this event
 	void Stop(bool allowFadeOut = true);

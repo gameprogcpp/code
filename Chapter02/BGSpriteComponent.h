@@ -15,7 +15,7 @@ class BGSpriteComponent : public SpriteComponent
 public:
 	// Set draw order to default to lower (so it's in the background)
 	BGSpriteComponent(class Actor* owner, int drawOrder = 10);
-	// Update/draw overriden from parent
+	// Update/draw overridden from parent
 	void Update(float deltaTime) override;
 	void Draw(SDL_Renderer* renderer) override;
 	// Set the textures used for the background

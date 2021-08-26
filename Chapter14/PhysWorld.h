@@ -26,7 +26,7 @@ public:
 		Vector3 mNormal;
 		// Component collided with
 		class BoxComponent* mBox;
-		// Owning actor of componnet
+		// Owning actor of component
 		class Actor* mActor;
 	};
 
