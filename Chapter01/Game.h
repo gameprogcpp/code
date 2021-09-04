@@ -52,4 +52,9 @@ private:
 	Vector2 mBallPos;
 	// Velocity of ball
 	Vector2 mBallVel;
+
+	// paddle 2
+	int mPaddle2Dir;
+	Vector2 mPaddle2Pos;
+
 };
