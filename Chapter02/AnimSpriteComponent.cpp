@@ -26,31 +26,50 @@ void AnimSpriteComponent::Update(float deltaTime)
 		// and delta time
 		mCurrFrame += mAnimFPS * deltaTime;
 		
+		Animation anim = mAnimations[mCurrAnim];
 		// Wrap current frame if needed
-		while (mCurrFrame >= mAnimTextures.size())
+		while (mCurrFrame >= anim.count)
 		{
-			if (mIsLoop)
+			if (anim.isLoop)
 			{
-				mCurrFrame -= mAnimTextures.size();
+				mCurrFrame -= anim.count;
 
 			}
 			else {
-				mCurrFrame = mAnimTextures.size() - 1;
+				mCurrFrame = anim.count - 1;
 			}
 		}
 
 		// Set the current texture
-		SetTexture(mAnimTextures[static_cast<int>(mCurrFrame)]);
+		// consider the start index of target animation
+		SetTexture(mAnimTextures[static_cast<int>(mCurrFrame) + anim.startIndex]);
 	}
 }
 
-void AnimSpriteComponent::SetAnimTextures(const std::vector<SDL_Texture*>& textures)
+void AnimSpriteComponent::SetAnimTextures(const std::vector<SDL_Texture*>& textures, std::string animName, bool isLoop)
 {
 	mAnimTextures = textures;
+	Animation anim{ 0, mAnimTextures.size(), isLoop};
+	mAnimations.clear();
+	// TODO: nameの重複の確認
+	mAnimations.emplace(animName, anim);
 	if (mAnimTextures.size() > 0)
 	{
 		// Set the active texture to first frame
 		mCurrFrame = 0.0f;
 		SetTexture(mAnimTextures[0]);
+
+		// Set the given animation active
+		mCurrAnim = animName;
 	}
+}
+
+
+void AnimSpriteComponent::AddAnimTextures(const std::vector<SDL_Texture*>& textures, std::string animName, bool isLoop)
+{
+	Animation anim{ mAnimTextures.size() - 1, textures.size(), isLoop };
+	mAnimations.emplace(animName, anim);
+	// テクスチャの連結
+	mAnimTextures.insert(mAnimTextures.end(), textures.begin(), textures.end());
+
 }
