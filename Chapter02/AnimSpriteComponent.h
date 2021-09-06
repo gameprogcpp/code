@@ -9,7 +9,7 @@
 #pragma once
 #include "SpriteComponent.h"
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <string>
 class AnimSpriteComponent : public SpriteComponent
 {
@@ -22,27 +22,39 @@ public:
 	// Add the textures used for animation: add to current textures
 	void AddAnimTextures(const std::vector<SDL_Texture*>& textures, std::string animName, bool isLoop);
 	// Set the animation displayed
-	void SetUseAnimation(std::string animName) { mCurrAnim = animName; };
+	void runAnimation(std::string animName);
 	// Set/get the animation FPS
 	float GetAnimFPS() const { return mAnimFPS; }
 	void SetAnimFPS(float fps) { mAnimFPS = fps; }
 	// Set whether animation loop of current animation
-	void SetIsLoop(bool isLoop) { mAnimations[mCurrAnim].isLoop = isLoop; }
+	void SetIsLoop(bool isLoop) { mAnimIsLoop[mCurrAnim] = isLoop; }
 private:
 	// All textures in all animations
 	std::vector<SDL_Texture*> mAnimTextures;
 
-	// 各アニメーション
-	struct Animation {
-		// start Index of mAnimTextures
-		int startIndex;
-		// number of texture
-		int count;
-		// whether animatnion loop
-		bool isLoop;
-	};
-	// All animations
-	std::map<std::string, Animation> mAnimations;
+	//// 各アニメーション
+	//struct Animation {
+	//	// start Index of mAnimTextures
+	//	int startIndex;
+	//	// number of texture
+	//	int count;
+	//	// whether animatnion loop
+	//	bool isLoop;
+
+	//	Animation() : startIndex(0), count(1), isLoop(false){}
+	//	Animation(int s, int c, bool l) 
+	//		:startIndex(s),
+	//		count(c),
+	//		isLoop(l)
+	//	{}
+	//};
+
+	// All animations params
+	// std::unordered_map<std::string, Animation> mAnimations;
+	// 構造体のmapが何故か代入されないので代用
+	std::unordered_map<std::string, int> mAnimStartIdx;
+	std::unordered_map<std::string, int> mAnimCount;
+	std::unordered_map<std::string, bool> mAnimIsLoop;
 
 	// Current animation name 
 	std::string mCurrAnim; 

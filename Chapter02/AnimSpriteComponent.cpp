@@ -8,7 +8,7 @@
 
 #include "AnimSpriteComponent.h"
 #include "Math.h"
-
+#include <iostream>
 AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder)
 	:SpriteComponent(owner, drawOrder)
 	, mCurrFrame(0.0f)
@@ -26,50 +26,71 @@ void AnimSpriteComponent::Update(float deltaTime)
 		// and delta time
 		mCurrFrame += mAnimFPS * deltaTime;
 		
-		Animation anim = mAnimations[mCurrAnim];
+		
 		// Wrap current frame if needed
-		while (mCurrFrame >= anim.count)
+		while (mCurrFrame >= mAnimCount[mCurrAnim])
 		{
-			if (anim.isLoop)
+			if (mAnimIsLoop[mCurrAnim])
 			{
-				mCurrFrame -= anim.count;
+				mCurrFrame -= mAnimCount[mCurrAnim];
 
 			}
 			else {
-				mCurrFrame = anim.count - 1;
+				mCurrFrame = mAnimCount[mCurrAnim] - 1;
 			}
 		}
 
 		// Set the current texture
 		// consider the start index of target animation
-		SetTexture(mAnimTextures[static_cast<int>(mCurrFrame) + anim.startIndex]);
+		int index = static_cast<int>(mCurrFrame) + mAnimStartIdx[mCurrAnim];
+		SetTexture(mAnimTextures[index]);
 	}
 }
 
 void AnimSpriteComponent::SetAnimTextures(const std::vector<SDL_Texture*>& textures, std::string animName, bool isLoop)
 {
 	mAnimTextures = textures;
-	Animation anim{ 0, mAnimTextures.size(), isLoop};
-	mAnimations.clear();
-	// TODO: nameの重複の確認
-	mAnimations.emplace(animName, anim);
+	mAnimStartIdx.clear();
+	mAnimCount.clear();
+	mAnimIsLoop.clear();
+	mAnimStartIdx[animName] = 0;
+	mAnimCount[animName] = static_cast<int>(mAnimTextures.size());
+	mAnimIsLoop[animName] = isLoop;
+		
 	if (mAnimTextures.size() > 0)
 	{
+		// Set the given animation active
+		mCurrAnim = animName;
+
 		// Set the active texture to first frame
 		mCurrFrame = 0.0f;
 		SetTexture(mAnimTextures[0]);
-
-		// Set the given animation active
-		mCurrAnim = animName;
 	}
 }
 
-
 void AnimSpriteComponent::AddAnimTextures(const std::vector<SDL_Texture*>& textures, std::string animName, bool isLoop)
 {
-	Animation anim{ mAnimTextures.size() - 1, textures.size(), isLoop };
-	mAnimations.emplace(animName, anim);
+	// TODO: nameの重複の確認
+	mAnimStartIdx[animName] = static_cast<int>(mAnimTextures.size());
+	mAnimCount[animName] = static_cast<int>(textures.size());
+	mAnimIsLoop[animName] = isLoop;
 	// テクスチャの連結
-	mAnimTextures.insert(mAnimTextures.end(), textures.begin(), textures.end());
+	//mAnimTextures.insert(mAnimTextures.end(), textures.begin(), textures.end()); // うまく行かない
+	mAnimTextures.reserve(mAnimTextures.size() + textures.size());
+	std::copy(textures.begin(), textures.end(), std::back_inserter(mAnimTextures));
 
 }
+
+void AnimSpriteComponent::runAnimation(std::string animName)
+{
+	// 前のアニメーションとの整合性は考えない
+// error処理: animNameが存在しない場合
+
+	if (mCurrAnim != animName && mAnimCount[animName] > 0)
+	{
+		mCurrAnim = animName;
+		mCurrFrame = 0.0f;
+		SetTexture(mAnimTextures[mAnimStartIdx[animName]]);
+	}
+}
+
