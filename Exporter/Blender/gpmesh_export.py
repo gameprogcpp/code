@@ -1,68 +1,142 @@
-import bpy
 
-def write_gpmesh(context, filepath, vertFormat):
-    # Get current object
-    obj = bpy.context.scene.objects.active
-    if obj.type == 'MESH':
-        mesh = obj.data
+
+bl_info = {
+    "name": "gpmesh Exporter",
+    "blender": (3,00,0),
+    "category": "Export"
+}
+
+import bpy
+import json
+
+def generate_gpmesh_json():
+    mesh = bpy.context.active_object.data
+    uv_layer = mesh.uv_layers.active.data
+
+    gpmesh = {
+        "version": 1,
+        "vertexformat": "PosNormSkinTex",
+        "shader": "Skinned",
+        "textures": [],
+        "specularPower": 100.0,
+        "vertices": [],
+        "indices": []
+    }
+
+    for vert in mesh.vertices:
+        pos = vert.co
+        normal = vert.normal
+        uv = uv_layer[vert.index].uv
+        gp_vert = []
+        gp_vert.extend([pos.x, pos.y, pos.z])
+        gp_vert.extend([normal.x, normal.y, normal.z])
+
+        # get bone indices and their weights that affect this vertex and sort them by weight from high to low
+        boneToWeightTuples = []
+        for group in vert.groups:
+            u8_weight = int(group.weight * 255)
+            boneToWeightTuples.append((group.group, u8_weight))
+        boneToWeightTuples.sort(key=lambda boneToWeight : boneToWeight[1], reverse=True)
+        
+        # Only keep first 4 bones with their weights. As we sorted them by their bone weight (from high to low)
+        # before, we only keep the once with highest influence.
+        boneToWeightTuples = boneToWeightTuples[:4]
+        
+        # The file format expects always 4 bones.
+        while len(boneToWeightTuples) < 4:
+            boneToWeightTuples.append((0, 0))
+        
+        boneIndices = []
+        weights = []
+        for boneIdx, weight in boneToWeightTuples:
+            boneIndices.append(boneIdx)
+            weights.append(weight)
+
+        gp_vert.extend(boneIndices)
+        gp_vert.extend(weights)
+        gp_vert.extend([uv.x, uv.y])
+        
+        gpmesh["vertices"].append(gp_vert)
+    
+    for poly in mesh.polygons:
+        tri = []
+        for loop_index in poly.loop_indices:
+            vertIndex = mesh.loops[loop_index].vertex_index
+            tri.append(vertIndex)
+        
+        gpmesh["indices"].append(tri)
+    
+    textures = []
+    materialSlots = bpy.context.active_object.material_slots
+    for matSlot in materialSlots:
+        if matSlot.material:
+            if matSlot.material.node_tree:
+                for node in matSlot.material.node_tree.nodes:
+                    if node.type == 'TEX_IMAGE':
+                        textures.append(node.image.name)
+
+    gpmesh["textures"] = textures
+    
+    return gpmesh
+
+def generate_gpskel_json():
+    gpskel = {
+        "version": 1,
+        "bonecount": 0,
+        "bones": []
+    }
+    boneInfos = []
+
+    armature = bpy.context.active_object
+    while armature.type != 'ARMATURE':
+        armature = armature.parent
+
+    if armature != bpy.context.active_object:
+        armature = armature.data
+        for i, bone in enumerate(armature.bones):
+            parentBone = bone.parent
+            parentIndex = -1
+            if parentBone:
+                parentIndex = armature.bones.find(parentBone.name)
+            
+            local_matrix = bone.matrix_local
+            trans = local_matrix.to_translation()
+            rot = local_matrix.to_quaternion()
+            boneInfo = {
+                "name": bone.name,
+                "index": i,
+                "parent": parentIndex,
+                "bindpose": {
+                    "rot": [rot.x, rot.y, rot.z, rot.w],
+                    "trans": [trans.x, trans.y, trans.z]
+                }
+            }
+            boneInfos.append(boneInfo)
+        
+        gpskel["bonecount"] = len(armature.bones)
+
+    gpskel["bones"] = boneInfos
+
+    return gpskel
+
+def write_some_data(context, filepath, export_gpmesh, export_gpskel, export_gpanim):
+    print("exporting to gpmesh...")
+
+    if export_gpmesh:
+        gpmesh = generate_gpmesh_json()
         f = open(filepath, 'w', encoding='utf-8')
-        f.write("{\n")
-        f.write("\t\"version\":1,\n")
-        f.write("\t\"vertexformat\":\"" + vertFormat + "\",\n")
-        f.write("\t\"shader\":\"BasicMesh\",\n")
-        
-        # For now, only one texture
-        # figure out the file name...
-        texname = filepath.split("\\")[-1].split("/")[-1].split(".")[0]
-        # Make it a png
-        texname += ".png"
-        f.write("\t\"textures\":[\n")
-        f.write("\t\t\"" + texname + "\"\n")
-        f.write("\t],\n")
-        
-        # specular power
-        f.write("\t\"specularPower\":100,\n")
-         
-        # vertices
-        # We have to create our own storage for because uvs are stored separately
-        verts = [dict() for x in range(len(mesh.vertices))]
-        for v in mesh.vertices:
-            verts[v.index]["pos"] = v.co
-            verts[v.index]["norm"] = v.normal
-        
-        for l in mesh.loops:
-            verts[l.vertex_index]["uv"] = mesh.uv_layers.active.data[l.index].uv
-        
-        f.write("\t\"vertices\":[\n")
-        first = True
-        for v in verts:
-            if first:
-                f.write("\t\t[")
-                first = False
-            else:
-                f.write(",\n\t\t[")
-            f.write("%f,%f,%f," % (v["pos"].x, v["pos"].y, v["pos"].z))
-            f.write("%f,%f,%f," % (v["norm"].x, v["norm"].y, v["norm"].z))
-            f.write("%f,%f" % (v["uv"].x, -1.0 * v["uv"].y))
-            f.write("]")
-        f.write("\n\t],\n")
-        
-        # indices
-        f.write("\t\"indices\":[\n")
-        first = True
-        for p in mesh.polygons:
-            if first:
-                f.write("\t\t")
-                first = False
-            else:
-                f.write(",\n\t\t")
-            f.write("[%d,%d,%d]" % (p.vertices[0], p.vertices[1], p.vertices[2]))
-        f.write("\n\t]\n")
-        
-        f.write("}\n")
+        # f.write("Hello World %s" % use_some_setting)
+        f.write(json.dumps(gpmesh, sort_keys=False, indent=2))
         f.close()
-    else:
-        raise ValueError("No mesh selected")
+    
+    if export_gpskel:
+        gpskel = generate_gpskel_json()
+        gpskel_filepath = filepath.split(".")[0] + '.gpskel'
+        f = open(gpskel_filepath, "w", encoding="utf-8")
+        f.write(json.dumps(gpskel, sort_keys=False, indent=2))
+        f.close()
+    
+    print("Done!")
 
     return {'FINISHED'}
 
@@ -74,49 +148,71 @@ from bpy.props import StringProperty, BoolProperty, EnumProperty
 from bpy.types import Operator
 
 
-class ExportGPMesh(Operator, ExportHelper):
-    """Export to Game Programming in C++ mesh format"""
-    bl_idname = "export_test.gpmesh"  # important since its how bpy.ops.import_test.some_data is constructed
-    bl_label = "Export Mesh"
+class ExportGPMESH(Operator, ExportHelper):
+    """Export mesh in gpmesh format."""
+    bl_idname = "export.gpmesh"  # important since its how bpy.ops.import_test.some_data is constructed
+    bl_label = "Export as gpmesh"
 
     # ExportHelper mixin class uses this
     filename_ext = ".gpmesh"
 
-    filter_glob = StringProperty(
-            default="*.gpmesh",
-            options={'HIDDEN'},
-            maxlen=255,  # Max internal buffer length, longer would be clamped.
-            )
-    
-    vertFormat = EnumProperty(
-            name="Vertex Format",
-            description="Choose the vertex format",
-            items=(('PosNormTex', "PosNormTex", "Position, normal, tex coord"),
-                   ('PosTex', "PosTex", "Position, tex coord")),
-            default='PosNormTex',
-            )
-    
+    filter_glob: StringProperty(
+        default="*.gpmesh",
+        options={'HIDDEN'},
+        maxlen=255,  # Max internal buffer length, longer would be clamped.
+    )
+
+    # List of operator properties, the attributes will be assigned
+    # to the class instance from the operator settings before calling.
+    export_gpmesh: BoolProperty(
+        name="Export gpmesh",
+        description="Writes the mesh as .gpmesh to disk",
+        default=True
+    )
+
+    export_gpskel: BoolProperty(
+        name="Export gpskel",
+        description="Writes .gpskel file to disk",
+        default=True
+    )
+
+    export_gpanim: BoolProperty(
+        name="Export gpanim",
+        description="Writes .gpanim file to disk",
+        default=True
+    )
+
+    type: EnumProperty(
+        name="Example Enum",
+        description="Choose between two items",
+        items=(
+            ('OPT_A', "First Option", "Description one"),
+            ('OPT_B', "Second Option", "Description two"),
+        ),
+        default='OPT_A',
+    )
+
     def execute(self, context):
-        return write_gpmesh(context, self.filepath, self.vertFormat)
+        return write_some_data(context, self.filepath, self.export_gpmesh, self.export_gpskel, self.export_gpanim)
 
 
 # Only needed if you want to add into a dynamic menu
 def menu_func_export(self, context):
-    self.layout.operator(ExportGPMesh.bl_idname, text="GPMesh Exporter (.gpmesh)")
+    self.layout.operator(ExportGPMESH.bl_idname, text="gpmesh")
 
-
+# Register and add to the "file selector" menu (required to use F3 search "Text Export Operator" for quick access)
 def register():
-    bpy.utils.register_class(ExportGPMesh)
-    bpy.types.INFO_MT_file_export.append(menu_func_export)
+    bpy.utils.register_class(ExportGPMESH)
+    bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
 
 
 def unregister():
-    bpy.utils.unregister_class(ExportGPMesh)
-    bpy.types.INFO_MT_file_export.remove(menu_func_export)
+    bpy.utils.unregister_class(ExportGPMESH)
+    bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
 
 
 if __name__ == "__main__":
     register()
 
     # test call
-    bpy.ops.export_test.gpmesh('INVOKE_DEFAULT')
+    bpy.ops.export.gpmesh('INVOKE_DEFAULT')
