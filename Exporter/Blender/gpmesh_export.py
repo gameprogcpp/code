@@ -88,7 +88,7 @@ def generate_gpskel_json():
     boneInfos = []
 
     armature = bpy.context.active_object
-    while armature.type != 'ARMATURE':
+    while armature.parent and armature.type != 'ARMATURE':
         armature = armature.parent
 
     if armature != bpy.context.active_object:
