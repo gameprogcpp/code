@@ -79,6 +79,15 @@ def generate_gpmesh_json():
     
     return gpmesh
 
+def find_armature(active_object):
+    armature = active_object
+    while armature.parent and armature.type != 'ARMATURE':
+        armature = armature.parent
+    
+    if armature.type == 'ARMATURE':
+        return armature
+    return None
+
 def generate_gpskel_json():
     gpskel = {
         "version": 1,
@@ -87,11 +96,8 @@ def generate_gpskel_json():
     }
     boneInfos = []
 
-    armature = bpy.context.active_object
-    while armature.parent and armature.type != 'ARMATURE':
-        armature = armature.parent
-
-    if armature != bpy.context.active_object:
+    armature = find_armature(bpy.context.active_object)
+    if armature:
         armature = armature.data
         for i, bone in enumerate(armature.bones):
             parentBone = bone.parent
@@ -119,6 +125,41 @@ def generate_gpskel_json():
 
     return gpskel
 
+def generate_gpanim_json(action):
+    gpanim = {
+        "version": 1,
+        "sequence": {
+            "frames": 0,
+            "length": 0.0,
+            "bonecount": 0,
+            "tracks": []
+        }
+    }
+    active_object = bpy.context.active_object
+    active_object.animation_data.action = action
+    armature = find_armature(active_object)
+    frame_start, frame_end = int(action.frame_range.x), int(action.frame_range.y)
+    gpanim["sequence"]["frames"] = frame_end
+    gpanim["sequence"]["bonecount"] = len(armature.data.bones)
+    for i, bone in enumerate(armature.pose.bones):
+        track = {
+            "bone": i,
+            "transforms": []
+        }
+        for frame in range(frame_start, frame_end):
+            bpy.context.scene.frame_set(frame)
+            rot = bone.matrix.to_quaternion()
+            trans = bone.matrix.to_translation()
+            transform = {
+                "rot": [rot.x, rot.y, rot.z, rot.w],
+                "trans": [trans.x, trans.y, trans.z]
+            }
+            track["transforms"].append(transform)
+
+        gpanim["sequence"]["tracks"].append(track)
+    
+    return gpanim
+
 def write_some_data(context, filepath, export_gpmesh, export_gpskel, export_gpanim):
     print("exporting to gpmesh...")
 
@@ -135,6 +176,17 @@ def write_some_data(context, filepath, export_gpmesh, export_gpskel, export_gpan
         f = open(gpskel_filepath, "w", encoding="utf-8")
         f.write(json.dumps(gpskel, sort_keys=False, indent=2))
         f.close()
+    
+    if export_gpanim:
+        print("EXPORT GPANIM")
+        actions = bpy.data.actions
+        print(actions)
+        for action in actions:
+            gpanim = generate_gpanim_json(action)
+            gpanim_filepath = filepath.split(".")[0] + str(action.name) + '.gpanim'
+            f = open(gpanim_filepath, "w", encoding="utf-8")
+            f.write(json.dumps(gpanim, sort_keys=False, indent=2))
+            f.close()
     
     print("Done!")
 
