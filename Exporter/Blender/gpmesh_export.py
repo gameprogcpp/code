@@ -138,6 +138,7 @@ def generate_gpanim_json(action):
     active_object = bpy.context.active_object
     # active_object.animation_data.action = action
     armature = find_armature(active_object)
+    armature.animation_data.action = action
     frame_start, frame_end = int(action.frame_range.x), int(action.frame_range.y)
     gpanim["sequence"]["frames"] = frame_end - 1 # TODO: Hacky (engine expects duplicate of first keyframe at the end but should not count as one)
     gpanim["sequence"]["bonecount"] = len(armature.data.bones)
@@ -160,7 +161,7 @@ def generate_gpanim_json(action):
     
     return gpanim
 
-def write_some_data(context, filepath, export_gpmesh, export_gpskel, export_gpanim):
+def write_to_disk(context, filepath, export_gpmesh, export_gpskel, export_gpanim):
     print("exporting to gpmesh...")
 
     if export_gpmesh:
@@ -245,7 +246,7 @@ class ExportGPMESH(Operator, ExportHelper):
     )
 
     def execute(self, context):
-        return write_some_data(context, self.filepath, self.export_gpmesh, self.export_gpskel, self.export_gpanim)
+        return write_to_disk(context, self.filepath, self.export_gpmesh, self.export_gpskel, self.export_gpanim)
 
 
 # Only needed if you want to add into a dynamic menu
