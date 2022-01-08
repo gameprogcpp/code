@@ -235,16 +235,6 @@ class ExportGPMESH(Operator, ExportHelper):
         default=True
     )
 
-    type: EnumProperty(
-        name="Example Enum",
-        description="Choose between two items",
-        items=(
-            ('OPT_A', "First Option", "Description one"),
-            ('OPT_B', "Second Option", "Description two"),
-        ),
-        default='OPT_A',
-    )
-
     def execute(self, context):
         return write_to_disk(context, self.filepath, self.export_gpmesh, self.export_gpskel, self.export_gpanim)
 
