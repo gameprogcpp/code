@@ -73,7 +73,7 @@ def generate_gpmesh_json():
             if matSlot.material.node_tree:
                 for node in matSlot.material.node_tree.nodes:
                     if node.type == 'TEX_IMAGE':
-                        textures.append(node.image.name)
+                        textures.append("Assets/" + node.image.name)
 
     gpmesh["textures"] = textures
     
@@ -130,16 +130,16 @@ def generate_gpanim_json(action):
         "version": 1,
         "sequence": {
             "frames": 0,
-            "length": 0.0,
+            "length": 1.0, # TODO: Calculate from framerate
             "bonecount": 0,
             "tracks": []
         }
     }
     active_object = bpy.context.active_object
-    active_object.animation_data.action = action
+    # active_object.animation_data.action = action
     armature = find_armature(active_object)
     frame_start, frame_end = int(action.frame_range.x), int(action.frame_range.y)
-    gpanim["sequence"]["frames"] = frame_end
+    gpanim["sequence"]["frames"] = frame_end - 1 # TODO: Hacky (engine expects duplicate of first keyframe at the end but should not count as one)
     gpanim["sequence"]["bonecount"] = len(armature.data.bones)
     for i, bone in enumerate(armature.pose.bones):
         track = {
