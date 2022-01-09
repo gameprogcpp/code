@@ -28,7 +28,7 @@ def generate_gpmesh_json():
         normal = vert.normal
         uv = uv_layer[vert.index].uv
         gp_vert = []
-        gp_vert.extend([pos.x, pos.y, pos.z])
+        gp_vert.extend([pos.x, pos.z, pos.y])
         gp_vert.extend([normal.x, normal.y, normal.z])
 
         # get bone indices and their weights that affect this vertex and sort them by weight from high to low
@@ -105,15 +105,23 @@ def generate_gpskel_json():
             if parentBone:
                 parentIndex = armature.bones.find(parentBone.name)
             
+            # local_matrix = (bone.matrix_local if bone.parent is None else bone.parent.matrix_local.inverted() * bone.matrix_local)                
             local_matrix = bone.matrix_local
             trans = local_matrix.to_translation()
             rot = local_matrix.to_quaternion()
+            if bone.parent:
+                parent_matrix = bone.parent.matrix_local
+                parent_trans = parent_matrix.to_translation()
+                parent_rot = parent_matrix.to_quaternion()
+                trans = trans - parent_trans
+                rot = rot - parent_rot
+
             boneInfo = {
                 "name": bone.name,
                 "index": i,
                 "parent": parentIndex,
                 "bindpose": {
-                    "rot": [rot.x, rot.y, rot.z, rot.w],
+                    "rot": [rot.x, rot.z, rot.y, rot.w],
                     "trans": [trans.x, trans.y, trans.z]
                 }
             }
@@ -149,10 +157,14 @@ def generate_gpanim_json(action):
         }
         for frame in range(frame_start, frame_end):
             bpy.context.scene.frame_set(frame)
-            rot = bone.matrix.to_quaternion()
-            trans = bone.matrix.to_translation()
+            bone_matrix = bone.matrix_basis
+            if bone.parent:
+                bone_matrix = bone.parent.matrix.inverted() * bone.matrix_basis
+                # bone_matrix = bone.matrix_basis
+            rot = bone_matrix.to_quaternion()
+            trans = bone_matrix.to_translation()
             transform = {
-                "rot": [rot.x, rot.y, rot.z, rot.w],
+                "rot": [rot.x, rot.z, rot.y, rot.w],
                 "trans": [trans.x, trans.y, trans.z]
             }
             track["transforms"].append(transform)
