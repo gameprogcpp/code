@@ -109,7 +109,7 @@ def generate_gpskel_json():
             local_matrix = bone.matrix_local
             if bone.parent:
                 local_matrix = bone.parent.matrix_local.inverted() @ bone.matrix_local
-            rot = local_matrix.to_quaternion()
+            rot = local_matrix.to_quaternion().inverted()
             trans = local_matrix.to_translation()
             
             boneInfo = {
@@ -166,7 +166,7 @@ def generate_gpanim_json(action):
             localMat = armature.pose.bones[i].matrix
             if armature.pose.bones[i].parent:
                 localMat = armature.pose.bones[i].parent.matrix.inverted() @ armature.pose.bones[i].matrix
-            rot = localMat.to_quaternion()
+            rot = localMat.to_quaternion().inverted()
             trans = localMat.to_translation()
             gpanim["sequence"]["tracks"][i]["transforms"].append({ "rot": [rot.y, rot.x, rot.z, rot.w], "trans": [trans.y, trans.x, trans.z] })
 
