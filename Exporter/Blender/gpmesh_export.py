@@ -28,8 +28,8 @@ def generate_gpmesh_json():
         normal = vert.normal
         uv = uv_layer[vert.index].uv
         gp_vert = []
-        gp_vert.extend([pos.x, pos.z, pos.y])
-        gp_vert.extend([normal.x, normal.y, normal.z])
+        gp_vert.extend([pos.y, pos.x, pos.z])
+        gp_vert.extend([normal.y, normal.x, normal.z])
 
         # get bone indices and their weights that affect this vertex and sort them by weight from high to low
         boneToWeightTuples = []
@@ -107,22 +107,18 @@ def generate_gpskel_json():
             
             # local_matrix = (bone.matrix_local if bone.parent is None else bone.parent.matrix_local.inverted() * bone.matrix_local)                
             local_matrix = bone.matrix_local
-            trans = local_matrix.to_translation()
-            rot = local_matrix.to_quaternion()
             if bone.parent:
-                parent_matrix = bone.parent.matrix_local
-                parent_trans = parent_matrix.to_translation()
-                parent_rot = parent_matrix.to_quaternion()
-                trans = trans - parent_trans
-                rot = rot - parent_rot
-
+                local_matrix = bone.parent.matrix_local.inverted() @ bone.matrix_local
+            rot = local_matrix.to_quaternion()
+            trans = local_matrix.to_translation()
+            
             boneInfo = {
                 "name": bone.name,
                 "index": i,
                 "parent": parentIndex,
                 "bindpose": {
-                    "rot": [rot.x, rot.z, rot.y, rot.w],
-                    "trans": [trans.x, trans.y, trans.z]
+                    "rot": [rot.y, rot.x, rot.z, rot.w],
+                    "trans": [trans.y, trans.x, trans.z]
                 }
             }
             boneInfos.append(boneInfo)
@@ -132,6 +128,16 @@ def generate_gpskel_json():
     gpskel["bones"] = boneInfos
 
     return gpskel
+
+def local_matrices_for_frame(root, rootMat):
+    local_matrices = []
+    for child in root.children_recursive:
+        if child.parent.name == root.name:
+            localTransform = rootMat.inverted() @ child.matrix_basis
+            local_matrices.append(localTransform)
+            local_matrices.extend(local_matrices_for_frame(child, localTransform))
+    
+    return local_matrices
 
 def generate_gpanim_json(action):
     gpanim = {
@@ -150,27 +156,43 @@ def generate_gpanim_json(action):
     frame_start, frame_end = int(action.frame_range.x), int(action.frame_range.y)
     gpanim["sequence"]["frames"] = frame_end - 1 # TODO: Hacky (engine expects duplicate of first keyframe at the end but should not count as one)
     gpanim["sequence"]["bonecount"] = len(armature.data.bones)
-    for i, bone in enumerate(armature.pose.bones):
-        track = {
-            "bone": i,
-            "transforms": []
-        }
+
+    for i, bones in enumerate(armature.data.bones):
+        gpanim["sequence"]["tracks"].append({ "bone": i, "transforms": [] })
+
         for frame in range(frame_start, frame_end):
             bpy.context.scene.frame_set(frame)
-            bone_matrix = bone.matrix_basis
-            if bone.parent:
-                bone_matrix = bone.parent.matrix.inverted() * bone.matrix_basis
-                # bone_matrix = bone.matrix_basis
-            rot = bone_matrix.to_quaternion()
-            trans = bone_matrix.to_translation()
-            transform = {
-                "rot": [rot.x, rot.z, rot.y, rot.w],
-                "trans": [trans.x, trans.y, trans.z]
-            }
-            track["transforms"].append(transform)
 
-        gpanim["sequence"]["tracks"].append(track)
-    
+            localMat = armature.pose.bones[i].matrix
+            if armature.pose.bones[i].parent:
+                localMat = armature.pose.bones[i].parent.matrix.inverted() @ armature.pose.bones[i].matrix
+            rot = localMat.to_quaternion()
+            trans = localMat.to_translation()
+            gpanim["sequence"]["tracks"][i]["transforms"].append({ "rot": [rot.y, rot.x, rot.z, rot.w], "trans": [trans.y, trans.x, trans.z] })
+
+
+
+    # for frame in range(frame_start, frame_end):
+    #     bpy.context.scene.frame_set(frame)
+
+    #     rootBone = armature.pose.bones["Root"]
+    #     rootTransform = rootBone.matrix
+
+    #     pose = [ rootTransform ] # a pose contains all the bones transforms for this particular frame
+
+    #     # now add children to the pose
+    #     pose.extend(local_matrices_for_frame(rootBone, rootBone.matrix))
+
+    #     print(len(pose))
+    #     print(pose)
+
+    #     # add them to the tracks
+    #     for i, localMat in enumerate(pose):
+    #         rot = localMat.to_quaternion()
+    #         trans = localMat.to_translation()
+    #         gpanim["sequence"]["tracks"][i]["transforms"].append({ "rot": [rot.y, rot.x, rot.z, rot.w], "trans": [trans.y, trans.x, trans.z] })
+        
+
     return gpanim
 
 def write_to_disk(context, filepath, export_gpmesh, export_gpskel, export_gpanim):
