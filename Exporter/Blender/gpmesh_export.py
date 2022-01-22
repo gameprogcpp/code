@@ -1,9 +1,28 @@
-
+# Usage:
+#
+# - You should make a copy of your .blend file eg. 'my-scene-export.blend'! 
+#
+# - The armature's pivot must be the same as the meshe's it is attached to.
+#
+# - The animation must have at least 2 keyframes and start at position 1.
+#
+# - UVs are stored per face in Blender. The GPmesh format expects to have _one_ UV per vertex.
+#   Blender can easily have multiple UV coordinates assigned to the same vertex-index. Thus,
+#   in order to get UVs exported correctly, vertices must be dublicated. This can be done
+#   in the following way:
+#   1.) Go into edit mode and select all edges.
+#   2.) From the menu choose Edge -> Mark Sharp.
+#   3.) Switch into object mode and assign the 'Edge Split' modifier. Apply that. Done.
+#
+# - The engine of the book expects all polygons to be a triangle. So if your mesh has
+#   n-gons, with n > 3, you have to apply the 'Triangulate' modifier or split your polygons manually.
 
 bl_info = {
     "name": "gpmesh Exporter",
     "blender": (3,00,0),
-    "category": "Export"
+    "category": "Export",
+    "author": "Michael Eggers",
+    "description": "GPmesh exporter for the book Game Programming in C++"
 }
 
 import bpy
@@ -26,7 +45,6 @@ def generate_gpmesh_json():
     for vert in mesh.vertices:
         pos = vert.co
         normal = vert.normal
-        uv = uv_layer[vert.index].uv
         gp_vert = []
         gp_vert.extend([pos.y, pos.x, pos.z])
         gp_vert.extend([normal.y, normal.x, normal.z])
@@ -54,9 +72,16 @@ def generate_gpmesh_json():
 
         gp_vert.extend(boneIndices)
         gp_vert.extend(weights)
-        gp_vert.extend([uv.x, uv.y])
         
         gpmesh["vertices"].append(gp_vert)
+    
+    # UVs are stored separately, because even if multiple vertices share the same pos/normal/..
+    # they can have easily have completely differen UVs!
+    for l in mesh.loops:
+        uv = uv_layer[l.index].uv
+        if len(gpmesh["vertices"][l.vertex_index]) <= 14:
+            gpmesh["vertices"][l.vertex_index].extend([uv.x, -uv.y])
+        # print(vert_idx, loop_idx, uv)
     
     for poly in mesh.polygons:
         tri = []
