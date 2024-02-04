@@ -43,7 +43,7 @@ ButtonState KeyboardState::GetKeyState(SDL_Scancode keyCode) const
 
 bool MouseState::GetButtonValue(int button) const
 {
-	return (SDL_BUTTON(button) & mCurrButtons) == 1;
+	return (SDL_BUTTON(button) & mCurrButtons);
 }
 
 ButtonState MouseState::GetButtonState(int button) const
