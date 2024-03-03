@@ -70,7 +70,7 @@ private:
 
 	// Position of paddle
 	//Vector2 mPaddlePos;
-	std::vector<Paddle> mPaddlesPos;
+	std::vector<Paddle> mPaddlesPos; // paddle, paddle info
 
 	// Position of ball
 	Vector2 mBallPos;
