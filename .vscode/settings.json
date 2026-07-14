@@ -1,0 +1,8 @@
+{
+  "cmake.buildDirectory": "${workspaceFolder}/Chapter01/build",
+  "cmake.sourceDirectory": "${workspaceFolder}/Chapter01",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/Chapter01/build/compile_commands.json",
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/Chapter01/build"
+  ]
+}

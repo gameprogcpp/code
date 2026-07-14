@@ -3,6 +3,8 @@
 *.opendb
 Debug/
 Release/
+build/
+.cache/
 .DS_Store
 *xcuserdatad*
 *.xccheckout

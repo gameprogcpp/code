@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "name": "Chapter01",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/Chapter01/build/Chapter01",
+      "args": [],
+      "cwd": "${workspaceFolder}/Chapter01",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      }
+    }
+  ]
+}
